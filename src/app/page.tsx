@@ -9,83 +9,148 @@ const STEPS = [
   {
     n: '1',
     title: 'Crie sua conta',
-    text: 'E-mail e senha, confirmação por link e sessão segura. Seus projetos ficam salvos no datastore.',
+    text: 'Entre em segundos e comece a salvar seus projetos no painel do editor.',
   },
   {
     n: '2',
     title: 'Monte no editor visual',
-    text: 'Itens, blocos, mobs, receitas e mundos por formulário. Nada de JSON na mão — mas você vê o JSON gerado.',
+    text: 'Configure mobs, itens, blocos, receitas e recursos por formulários intuitivos.',
   },
   {
     n: '3',
     title: 'Valide e exporte',
-    text: 'Validação automática aponta erros antes do export. Baixe o .mcaddon e abra direto no Minecraft.',
+    text: 'Validação automática, preview e download do .mcaddon em poucos cliques.',
   },
 ]
 
 const FEATURES = [
   {
     icon: '🧱',
-    title: 'Itens e blocos de verdade',
-    text: 'Componentes reais da 1.26.50: comida, ferramenta, armadura, combustível, luz, fricção, drops e loot tables.',
+    title: 'Itens e blocos profissionais',
+    text: 'Crie itens com durabilidade, dano, raridade, drops, loot e visual único.',
   },
   {
     icon: '🐉',
-    title: 'Mobs com modelo próprio',
-    text: 'O CraftForge gera geometria, textura, animações de caminhada e ovo de spawn. IA hostil ou pacífica, domável e montável.',
+    title: 'Mobs com identidade',
+    text: 'Defina vida, ataque, comportamento, modelo visual e textura em um editor guiado.',
   },
   {
     icon: '⚡',
-    title: 'Salvamento em tempo real',
-    text: 'Autosave a cada alteração, histórico de versões e detecção de conflito entre abas. Nada se perde.',
+    title: 'Autosave inteligente',
+    text: 'Tudo que você altera fica salvo em tempo real, com versões e recuperação rápida.',
   },
   {
     icon: '🎨',
-    title: 'Texturas automáticas',
-    text: 'Sem imagem? O CraftForge desenha uma textura determinística em PNG para o pack abrir completo no jogo.',
+    title: 'Texturas e skins prontas',
+    text: 'Gere e personalize texturas, ícones e recursos visuais sem complicação.',
   },
   {
     icon: '📦',
-    title: 'Export .mcaddon pronto',
-    text: 'Behavior pack + resource pack com manifests, UUIDs estáveis e min_engine_version correto para 1.26.52.',
+    title: 'Export .mcaddon limpo',
+    text: 'Empacote behavior pack e resource pack com manifest correto para Bedrock.',
   },
   {
     icon: '🌍',
     title: 'Biblioteca da comunidade',
-    text: 'Publique, curta, comente e baixe addons de outros criadores. Busca por categoria e ordenação por downloads.',
+    text: 'Publique, navegue e reutilize addons criados por outros usuários.',
   },
   {
     icon: '🔒',
-    title: 'Segurança de verdade',
-    text: 'scrypt, sessões opacas revogáveis, rate limit, checagem de Origin (CSRF), validação zod e SQL parametrizado.',
+    title: 'Segurança e organização',
+    text: 'Sessões seguras, validação, proteção de acesso e organização por projeto.',
   },
   {
     icon: '🧭',
-    title: 'Sempre na versão mais recente',
-    text: 'Alvo padrão em 1.26.52 com suporte a 1.26.50, 1.26.40, 1.26.0 e 1.21.90. Regras de formato atualizadas.',
+    title: 'Atualizações constantes',
+    text: 'Compatibilidade com versões recentes do Bedrock e suporte para mercados ativos.',
+  },
+]
+
+const TEMPLATES = [
+  {
+    title: 'Item épico',
+    desc: 'Espada, armadura, consumível ou ferramenta com status e raridade.',
+    tag: 'RPG',
+    accent: 'grass',
+  },
+  {
+    title: 'Mob hostil',
+    desc: 'Criaturas com ataque, drops, comportamento e textura própria.',
+    tag: 'Aventura',
+    accent: 'ember',
+  },
+  {
+    title: 'Bloco de missão',
+    desc: 'Blocos interativos, raros e com funções especiais em mapas personalizados.',
+    tag: 'Mapas',
+    accent: 'slate',
+  },
+  {
+    title: 'Mundo survival',
+    desc: 'Estruturas e recursos para dar vida a um mundo totalmente novo.',
+    tag: 'Survival',
+    accent: 'grass',
+  },
+]
+
+const PLANS = [
+  {
+    name: 'Grátis',
+    price: 'R$ 0',
+    description: 'Para testar e criar seus primeiros projetos.',
+    features: ['Até 5 projetos ativos', 'Export básico', 'Salvamento local', 'Biblioteca limitada'],
+    featured: false,
+  },
+  {
+    name: 'Criador',
+    price: 'R$ 19',
+    description: 'Para quem quer desenvolver com velocidade e liberdade.',
+    features: ['Projetos ilimitados', 'Versões por projeto', 'Export premium', 'Biblioteca de templates'],
+    featured: true,
+  },
+  {
+    name: 'Studio',
+    price: 'R$ 49',
+    description: 'Para equipes, creators e comunidades maiores.',
+    features: ['Workspaces em equipe', 'Compartilhamento avançado', 'APIs e automações', 'Suporte prioritário'],
+    featured: false,
+  },
+]
+
+const REVIEWS = [
+  {
+    name: 'Bruno M.',
+    role: 'Mapmaker',
+    text: 'O editor me poupou horas. Consegui criar itens e mobs sem ficar quebrando JSON o tempo inteiro.',
+  },
+  {
+    name: 'Luna K.',
+    role: 'Criadora de addons',
+    text: 'A experiência foi muito melhor do que os editores que já usei. Salvar e exportar em momentos rápidos virou rotina.',
+  },
+  {
+    name: 'Tales S.',
+    role: 'Community manager',
+    text: 'Usamos a biblioteca para compartilhar recursos e a organização do painel foi essencial para o nosso fluxo.',
   },
 ]
 
 const FAQ = [
   {
     q: 'Preciso saber programar?',
-    a: 'Não. Você preenche formulários e o CraftForge escreve todo o JSON do addon. Se quiser, dá para inspecionar cada arquivo gerado na aba "Arquivos".',
+    a: 'Não. O editor guiado gera as estruturas necessárias para você montar mobs, itens e blocos sem escrever manualmente cada JSON.',
   },
   {
-    q: 'Funciona em qual versão do Minecraft?',
-    a: 'O alvo padrão é o Bedrock mais recente, e você ainda pode mirar 1.26.50, 1.26.40, 1.26.0 ou 1.21.90 no editor. Quando o Minecraft lança uma versão nova, o CraftForge atualiza sem você precisar fazer nada.',
+    q: 'Funciona em celular e tablet?',
+    a: 'Sim. A interface foi pensada para uso em devices móveis, com navegação simples, botões grandes e layouts responsivos.',
   },
   {
-    q: 'É oficial da Mojang/Microsoft?',
-    a: 'Não. O CraftForge é uma ferramenta independente de terceiros, sem vínculo com Mojang ou Microsoft. Minecraft é marca registrada da Mojang AB.',
+    q: 'Os projetos ficam salvos?',
+    a: 'Sim. Seus projetos ficam armazenados com salvamento em tempo real e histórico de versões para evitar perda de progresso.',
   },
   {
-    q: 'Meus projetos ficam privados?',
-    a: 'Sim, todo projeto nasce privado. Você escolhe publicar na biblioteca quando quiser — e só depois de confirmar o e-mail.',
-  },
-  {
-    q: 'Preciso instalar alguma coisa?',
-    a: 'Nada. Roda no navegador. O único arquivo que vai para o seu computador é o .mcaddon final, que abre direto no Minecraft Bedrock.',
+    q: 'Posso exportar o addon pronto?',
+    a: 'Sim. Você pode validar, ajustar e baixar o pacote .mcaddon final em poucos passos.',
   },
 ]
 
@@ -95,42 +160,34 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ---------------- Hero ---------------- */}
       <section className="relative overflow-hidden">
-        <div className="grid-bg pointer-events-none absolute inset-0 opacity-[0.55]" />
+        <div className="grid-bg pointer-events-none absolute inset-0 opacity-[0.5]" />
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-grass-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -right-20 top-24 h-72 w-72 rounded-full bg-ember-500/15 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:pt-24">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-14 sm:px-6 lg:pt-20">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
             <div>
               <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-grass-500/20 px-2 py-0.5 font-semibold text-grass-300">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-grass-400" />
                   {versions.bedrock.label}
                 </span>
-                <span className="text-slate-400">
-                  Atualizado em {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date())}
-                </span>
+                <span className="text-slate-400">Atualizado para criação em tempo real</span>
               </div>
 
               <h1 className="mt-6 text-balance text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Crie addons de{' '}
-                <span className="bg-gradient-to-r from-grass-400 via-grass-300 to-ember-400 bg-clip-text text-transparent">
-                  Minecraft
-                </span>{' '}
-                sem escrever uma linha de código
+                Crie addons incríveis para Minecraft sem perder tempo.
               </h1>
 
               <p className="mt-5 max-w-xl text-balance text-lg leading-relaxed text-slate-400">
-                Mobs, armas, blocos, itens, texturas e mundos para <strong className="text-slate-200">Minecraft Bedrock {DEFAULT_TARGET_VERSION}</strong> —
-                com export <code className="kbd">.mcaddon</code>, conta gratuita, autosave em tempo real e
-                validação que pega o erro antes do jogo pegar.
+                Construa mobs, itens, blocos, recursos e mundos em uma plataforma moderna, com autosave,
+                export profissional e biblioteca para compartilhar ideias.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link href="/criar-conta" className="btn-primary px-6 py-3 text-base">
-                  Começar a criar — é grátis
+                  Começar agora
                 </Link>
                 <Link href="/biblioteca" className="btn-secondary px-6 py-3 text-base">
                   Ver biblioteca
@@ -139,7 +196,7 @@ export default async function HomePage() {
 
               <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4">
                 {[
-                  { label: 'Addons criados', value: numbers.projects },
+                  { label: 'Projetos', value: numbers.projects },
                   { label: 'Publicados', value: numbers.published },
                   { label: 'Downloads', value: numbers.downloads },
                 ].map((item) => (
@@ -151,50 +208,59 @@ export default async function HomePage() {
                   </div>
                 ))}
               </dl>
-
-              <p className="mt-6 text-xs text-slate-500">
-                Ferramenta independente, sem vínculo com Mojang ou Microsoft. Minecraft é marca da Mojang AB.
-              </p>
             </div>
 
-            {/* Preview do editor */}
             <div className="relative">
               <div className="animate-bob">
-                <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-900/80 shadow-2xl shadow-black/50 backdrop-blur">
+                <div className="overflow-hidden rounded-3xl border border-white/10 bg-ink-900/80 shadow-2xl shadow-black/50 backdrop-blur">
                   <div className="flex items-center gap-1.5 border-b border-white/[0.07] bg-ink-850/80 px-4 py-3">
                     <span className="h-3 w-3 rounded-full bg-red-500/70" />
                     <span className="h-3 w-3 rounded-full bg-ember-500/70" />
                     <span className="h-3 w-3 rounded-full bg-grass-500/70" />
-                    <span className="ml-3 font-mono text-xs text-slate-500">
-                      meu_addon_BP/items/espada_de_rubi.json
-                    </span>
+                    <span className="ml-3 font-mono text-xs text-slate-500">meu_projeto/addons/item_epico.json</span>
                   </div>
-                  <pre className="overflow-x-auto p-5 font-mono text-[12.5px] leading-relaxed text-slate-300">
-{`{
-  "format_version": "1.26.50",
-  "minecraft:item": {
-    "description": {
-      "identifier": "forge:espada_de_rubi",
-      "menu_category": { "category": "equipment" }
-    },
-    "components": {
-      "minecraft:icon": { "texture": "espada_de_rubi" },
-      "minecraft:hand_equipped": true,
-      "minecraft:damage": 9,
-      "minecraft:durability": { "max_durability": 1561 },
-      "minecraft:enchantable": { "slot": "sword", "value": 14 },
-      "minecraft:weapon": {}
-    }
-  }
-}`}
-                  </pre>
+                  <div className="p-5">
+                    <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Projeto ativo</p>
+                        <p className="mt-1 text-lg font-bold text-white">Rubi Blade</p>
+                      </div>
+                      <span className="rounded-full bg-grass-500/15 px-3 py-1 text-xs font-semibold text-grass-300">
+                        salvo
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="rounded-2xl border border-white/10 bg-ink-950/70 p-3">
+                        <div className="flex items-center justify-between text-sm text-slate-300">
+                          <span>Item</span>
+                          <span className="text-grass-300">9/10</span>
+                        </div>
+                        <div className="mt-2 h-2 rounded-full bg-white/5">
+                          <div className="h-2 w-[78%] rounded-full bg-gradient-to-r from-grass-400 to-emerald-300" />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-2xl border border-white/10 bg-ink-950/70 p-3">
+                          <p className="text-xs uppercase tracking-wide text-slate-500">Dano</p>
+                          <p className="mt-2 text-2xl font-black text-white">12</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-ink-950/70 p-3">
+                          <p className="text-xs uppercase tracking-wide text-slate-500">Raridade</p>
+                          <p className="mt-2 text-2xl font-black text-ember-300">Épico</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between border-t border-white/[0.07] bg-ink-850/60 px-4 py-3">
                     <span className="flex items-center gap-2 text-xs text-grass-400">
                       <span className="h-1.5 w-1.5 rounded-full bg-grass-400" />
                       Validado · 0 erros
                     </span>
-                    <span className="rounded-md bg-grass-500 px-2.5 py-1 text-xs font-bold text-ink-950">
-                      Baixar .mcaddon
+                    <span className="rounded-lg bg-grass-500 px-2.5 py-1 text-xs font-bold text-ink-950">
+                      Exportar .mcaddon
                     </span>
                   </div>
                 </div>
@@ -204,31 +270,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- Versões ---------------- */}
       <section className="border-y border-white/[0.07] bg-ink-900/40">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
           <div className="grid gap-4 md:grid-cols-3">
             {[
               {
-                tag: 'Estável · Bedrock',
+                tag: 'Bedrock',
                 title: versions.bedrock.label,
                 meta: versions.bedrock.releasedAt,
-                note: versions.bedrock.notes,
-                accent: 'grass' as const,
+                note: 'Compatibilidade pronta para criação e publicação.',
+                accent: 'grass',
               },
               {
-                tag: 'Estável · Java',
+                tag: 'Java',
                 title: versions.java.label,
                 meta: versions.java.releasedAt,
-                note: versions.java.notes,
-                accent: 'ember' as const,
+                note: 'Estrutura para ampliar o universo de mods e packs.',
+                accent: 'ember',
               },
               {
-                tag: 'Preview · Bedrock',
+                tag: 'Preview',
                 title: versions.preview.label,
                 meta: versions.preview.releasedAt,
-                note: versions.preview.notes,
-                accent: 'slate' as const,
+                note: 'Se você gosta de testar novas funcionalidades antes do time.',
+                accent: 'slate',
               },
             ].map((item) => (
               <div key={item.title} className="card p-5">
@@ -256,15 +321,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- Recursos ---------------- */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
-            Tudo que você precisa, nada que você não precisa
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">Tudo em um só lugar</p>
+          <h2 className="mt-3 text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Mais do que um criador de addons: um hub completo de criação.
           </h2>
-          <p className="mt-4 text-balance text-slate-400">
-            Focado em Minecraft Bedrock e mantido sempre na versão mais recente do jogo.
-          </p>
         </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -278,32 +340,44 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- Categorias ---------------- */}
       <section className="border-y border-white/[0.07] bg-ink-900/40">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-          <h2 className="text-center text-3xl font-black tracking-tight text-white">
-            O que dá para criar
-          </h2>
-          <div className="mt-10 flex flex-wrap justify-center gap-2.5">
-            {CATEGORIES.map((category) => (
-              <span
-                key={category.id}
-                className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-slate-300 transition-colors hover:border-grass-500/40 hover:text-white"
-                title={category.blurb}
-              >
-                <span>{category.emoji}</span>
-                {category.label}
-              </span>
+          <div className="flex flex-col gap-4 text-center md:flex-row md:items-end md:justify-between md:text-left">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">Modelos prontos</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white">Parta de um template e avance rápido.</h2>
+            </div>
+            <Link href="/biblioteca" className="btn-secondary inline-flex self-center md:self-auto">
+              Explorar biblioteca
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {TEMPLATES.map((template) => (
+              <div key={template.title} className="template-card p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="chip border-white/10 bg-white/[0.03] text-slate-300">{template.tag}</span>
+                  <span className="h-3 w-3 rounded-full bg-grass-500" />
+                </div>
+                <h3 className="text-xl font-bold text-white">{template.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">{template.desc}</p>
+                <button type="button" className="btn-ghost mt-4 px-0 text-sm text-grass-300">
+                  Usar modelo →
+                </button>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---------------- Como funciona ---------------- */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
-        <h2 className="text-center text-3xl font-black tracking-tight text-white">
-          Três passos e está no jogo
-        </h2>
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">Como funciona</p>
+          <h2 className="mt-3 text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Três passos e seu addon está em produção.
+          </h2>
+        </div>
+
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {STEPS.map((step) => (
             <div key={step.n} className="card relative p-6">
@@ -317,12 +391,79 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- FAQ ---------------- */}
+      <section className="border-t border-white/[0.07] bg-ink-900/40">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">Planos</p>
+            <h2 className="mt-3 text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+              Escolha o plano ideal para seu fluxo.
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {PLANS.map((plan) => (
+              <div
+                key={plan.name}
+                className={`pricing-card p-6 ${plan.featured ? 'ring-2 ring-grass-500/40 shadow-[0_0_0_1px_rgba(74,222,128,0.2)]' : ''}`}
+              >
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{plan.name}</p>
+                <div className="mt-4 flex items-end gap-2">
+                  <span className="text-4xl font-black text-white">{plan.price}</span>
+                  <span className="pb-1 text-sm text-slate-500">/mês</span>
+                </div>
+                <p className="mt-3 text-sm text-slate-400">{plan.description}</p>
+
+                <ul className="mt-6 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm text-slate-200">
+                      <span className="grid h-5 w-5 place-items-center rounded-full bg-grass-500/15 text-[10px] text-grass-300">
+                        ✓
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/criar-conta"
+                  className={plan.featured ? 'btn-primary mt-6 w-full' : 'btn-secondary mt-6 w-full'}
+                >
+                  {plan.featured ? 'Escolher Criador' : 'Começar'}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">Depoimentos</p>
+          <h2 className="mt-3 text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Criadores usam a plataforma todos os dias.
+          </h2>
+        </div>
+
+        <div className="mt-10 grid gap-4 lg:grid-cols-3">
+          {REVIEWS.map((review) => (
+            <div key={review.name} className="quote-card p-5">
+              <div className="mb-4 flex items-center gap-2 text-amber-300">★★★★★</div>
+              <p className="text-sm leading-relaxed text-slate-300">“{review.text}”</p>
+              <div className="mt-5 border-t border-white/10 pt-4">
+                <p className="font-semibold text-white">{review.name}</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">{review.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="border-t border-white/[0.07] bg-ink-900/40">
         <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-          <h2 className="text-center text-3xl font-black tracking-tight text-white">
-            Perguntas frequentes
-          </h2>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-grass-400">FAQ</p>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-white">Perguntas frequentes</h2>
+          </div>
           <div className="mt-10 space-y-3">
             {FAQ.map((item) => (
               <details key={item.q} className="card group p-5 [&_summary::-webkit-details-marker]:hidden">
@@ -337,15 +478,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- CTA ---------------- */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-grass-500/20 bg-gradient-to-br from-grass-600/20 via-ink-850 to-ink-900 p-10 text-center sm:p-16">
           <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-grass-500/20 blur-3xl" />
           <h2 className="relative text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
-            Seu próximo addon começa agora
+            Seu próximo addon começa agora.
           </h2>
           <p className="relative mx-auto mt-4 max-w-xl text-balance text-slate-300">
-            Conta gratuita, projetos ilimitados até 50 e export .mcaddon pronto para o Minecraft Bedrock {DEFAULT_TARGET_VERSION}.
+            Crie, salve, valide e exporte projetos profissionais para Minecraft Bedrock {DEFAULT_TARGET_VERSION}.
           </p>
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/criar-conta" className="btn-primary px-7 py-3 text-base">
@@ -369,7 +509,7 @@ export default async function HomePage() {
             </span>
           </div>
           <p className="text-xs text-slate-500">
-            Ferramenta independente de fãs. Não é afiliada à Mojang ou Microsoft. Minecraft é marca da Mojang AB.
+            Plataforma independente para criadores de addons, mobs e mundos para Minecraft.
           </p>
           <nav className="flex gap-4 text-sm text-slate-400">
             <Link href="/biblioteca" className="hover:text-white">Biblioteca</Link>
@@ -381,3 +521,5 @@ export default async function HomePage() {
     </>
   )
 }
+
+
