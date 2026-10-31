@@ -25,6 +25,8 @@ class GamePackageManager private constructor(
     private val progressListener: MinecraftRuntimePreparer.ProgressListener?
 ) {
 
+    private val diagLines = ArrayDeque<String>()
+
     private val packageContext: Context
     private val assetManager: AssetManager
     private val nativeLibDir: String
@@ -446,8 +448,6 @@ class GamePackageManager private constructor(
         }
         if (e != null) Log.w(TAG, message)
     }
-
-    private val diagLines = ArrayDeque<String>()
 
     private fun report(message: String) {
         synchronized(diagLines) {
