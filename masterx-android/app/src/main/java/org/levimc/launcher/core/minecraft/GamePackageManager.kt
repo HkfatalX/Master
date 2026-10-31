@@ -643,8 +643,18 @@ class GamePackageManager private constructor(
             listener?.onLog("Loading native library: $lib")
             trace?.mark("System.load started", lib)
 
+            try {
+                File(context.filesDir, "last_native_load.txt")
+                    .writeText("$lib ($loadIndex/$total) at ${System.currentTimeMillis()}")
+            } catch (_: Exception) {
+            }
             val result = loadLibraryDetailed(libName)
             results.add(result)
+            try {
+                File(context.filesDir, "last_native_load.txt")
+                    .writeText("$lib finished OK=${result.loaded} ($loadIndex/$total)")
+            } catch (_: Exception) {
+            }
             val detail = formatLoadResult(result)
             trace?.mark(
                 if (result.loaded) "System.load finished" else "System.load failed",

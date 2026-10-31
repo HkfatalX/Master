@@ -86,6 +86,11 @@ class CrashActivity : BaseActivity() {
         executor.execute {
             val detailsText = buildString {
                 appendHeader(crashType, summary)
+                try {
+                    val last = File(filesDir, "last_native_load.txt")
+                    if (last.isFile) append("Ultima biblioteca nativa: ").append(last.readText()).append("\n\n")
+                } catch (_: Exception) {
+                }
 
                 if (!logPath.isNullOrEmpty()) {
                     append(getString(R.string.crash_log_file_label)).append("\n")
@@ -128,8 +133,11 @@ class CrashActivity : BaseActivity() {
     private fun condense(raw: String): String {
         val map = Regex("^\\s*[0-9a-f]{8,}-[0-9a-f]{8,}\\s+[r-][w-][x-][ps-]\\s.*$")
         val kept = raw.lineSequence().filterNot { map.matches(it) }.toList()
+        val mapped = raw.lineSequence().filter { map.matches(it) && it.contains(".so") }
+            .map { it.substringAfterLast('/') }.toList().takeLast(6)
         val dropped = raw.lineSequence().count() - kept.size
-        return kept.joinToString("\n") + if (dropped > 0) "\n\n[$dropped linhas de mapa de memoria omitidas]" else ""
+        return kept.joinToString("\n") +
+            (if (mapped.isNotEmpty()) "\n\nUltimas libs mapeadas:\n" + mapped.joinToString("\n") else "") + if (dropped > 0) "\n\n[$dropped linhas de mapa de memoria omitidas]" else ""
     }
 
     override fun onNewIntent(intent: Intent) {
