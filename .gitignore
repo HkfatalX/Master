@@ -1,42 +1,5 @@
-# Dependências
-node_modules/
-.pnp
-.pnp.js
-
-# Build
-.next/
-out/
 build/
-dist/
-.turbo/
-
-# Banco de dados local (datastore SQLite)
-data/
-*.db
-*.db-shm
-*.db-wal
-*.db.tmp-*
-
-# Segredo
-.env
-.env.local
-.env*.local
-
-# Logs
+.gradle/
+local.properties
 *.log
-npm-debug.log*
-yarn-error.log*
-
-# Sistema / editores
-.DS_Store
-Thumbs.db
-.vscode/*
-!.vscode/extensions.json
 .idea/
-
-# Testes
-coverage/
-
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
