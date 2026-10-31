@@ -259,6 +259,7 @@ class GamePackageManager private constructor(
                     }
                     report("Copied $lib from native lib directory")
                     if (!processNativeImage(dstFile, true)) {
+                        report("Image check rejected ${dstFile.name} (gxcore loaded=${NativeBridgeHelper.ensureGxCoreLoaded()})")
                         dstFile.delete()
                         throw IOException("Failed to prepare native library: ${dstFile.name}")
                     }
@@ -296,6 +297,7 @@ class GamePackageManager private constructor(
                     }
                     report("Extracted $lib from ${apkFile.name} for $abi")
                     if (!processNativeImage(output, true)) {
+                        report("Image check rejected ${output.name} (gxcore loaded=${NativeBridgeHelper.ensureGxCoreLoaded()})")
                         output.delete()
                         throw IOException("Failed to prepare native library: ${output.name}")
                     }
@@ -303,6 +305,7 @@ class GamePackageManager private constructor(
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to extract libraries from $apkPath: ${e.message}")
+            report("Extraction error in ${apkFile.name}: ${e.message}")
         }
     }
 
