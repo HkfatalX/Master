@@ -26,7 +26,14 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle -p masterx-android assembleDebug --no-daemon --stacktrace
+        run: |
+          set +e
+          gradle -p masterx-android assembleDebug --no-daemon --stacktrace > build.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then
+            grep -E "^e: |error:|FAILED|What went wrong|Caused by|Could not|AAPT|Execution failed" -A2 build.log | head -40 | while IFS= read -r l; do echo "::error::${l:0:400}"; done
+          fi
+          exit $code
 
       - name: Rename APK
         run: |
