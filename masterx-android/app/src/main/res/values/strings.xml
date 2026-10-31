@@ -1104,4 +1104,6 @@
     <string name="mx_cf_key_hint">Paste your key</string>
     <string name="mx_cf_key_save">Save</string>
     <string name="mx_cf_key_open_site">Get a key</string>
+    <string name="mx_nav_java">Java 🔒</string>
+    <string name="mx_java_locked">Java Edition support is coming soon.</string>
 </resources>

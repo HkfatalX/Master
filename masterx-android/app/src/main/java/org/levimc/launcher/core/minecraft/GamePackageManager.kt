@@ -447,7 +447,13 @@ class GamePackageManager private constructor(
         if (e != null) Log.w(TAG, message)
     }
 
+    private val diagLines = ArrayDeque<String>()
+
     private fun report(message: String) {
+        synchronized(diagLines) {
+            diagLines.addLast(message)
+            while (diagLines.size > 40) diagLines.removeFirst()
+        }
         if (progressListener != null) {
             progressListener.onLog(message)
         } else {
@@ -573,7 +579,10 @@ class GamePackageManager private constructor(
                 LibraryLoadResult(normalizedName, fileName, source, false, elapsedSince(startedAt), detail)
             }
         } else {
-            val detail = "$fileName not found in $nativeLibDir (found: ${File(nativeLibDir).list()?.sorted()?.joinToString() ?: "none"})"
+            val why = synchronized(diagLines) {
+                diagLines.filter { it.contains("rejected") || it.contains("error", true) || it.contains("missing", true) || it.contains("not found", true) || it.contains("Extracted") || it.contains("Copied") || it.contains("fallback", true) }.takeLast(8).joinToString(" | ")
+            }
+            val detail = "$fileName not found in $nativeLibDir (found: ${File(nativeLibDir).list()?.sorted()?.joinToString() ?: "none"}) [apks=${collectApkFiles().size}] $why"
             Log.w(TAG, detail)
             LibraryLoadResult(normalizedName, fileName, source, false, elapsedSince(startedAt), detail)
         }

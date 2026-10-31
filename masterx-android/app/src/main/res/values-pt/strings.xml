@@ -1086,4 +1086,6 @@
     <string name="mx_cf_key_hint">Cole a sua chave</string>
     <string name="mx_cf_key_save">Salvar</string>
     <string name="mx_cf_key_open_site">Pegar chave</string>
+    <string name="mx_nav_java">Java 🔒</string>
+    <string name="mx_java_locked">O suporte ao Minecraft Java está em desenvolvimento e ainda está bloqueado.</string>
 </resources>
