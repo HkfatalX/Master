@@ -49,7 +49,11 @@ class GamePackageManager private constructor(
         "libHttpClient.Android.so",
     )
 
-    private val extractableLibs = requiredLibs + optionalLibs
+    // Google Play's PairIP runtime, a DT_NEEDED of libminecraftpe.so. Extracted unmodified from
+    // the user's own APK; loading is best-effort and never fatal when absent.
+    private val extraLibs = arrayOf("libpairipcore.so")
+
+    private val extractableLibs = requiredLibs + optionalLibs + extraLibs
 
     private val systemLoadedLibs = arrayOf(
         "libPlayFabMultiplayer.so",
@@ -606,7 +610,14 @@ class GamePackageManager private constructor(
         progressEnd: Int = 74,
         excludeReasons: Map<String, String> = emptyMap()
     ): List<LibraryLoadResult> {
-        val allLibs = requiredLibs + systemLoadedLibs
+        val allLibs = buildList {
+            for (lib in requiredLibs + systemLoadedLibs) {
+                if (lib == "libminecraftpe.so" && File(nativeLibDir, "libpairipcore.so").exists()) {
+                    add("libpairipcore.so")
+                }
+                add(lib)
+            }
+        }.toTypedArray()
         val loadableLibs = allLibs.filterNot { lib ->
             val libName = normalizeLibraryName(lib)
             excludeLibs.contains(libName) || excludeLibs.contains(lib)
@@ -710,7 +721,7 @@ class GamePackageManager private constructor(
 
     companion object {
         private const val TAG = "GamePackageManager"
-        private const val EXTRACTOR_VERSION = 2
+        private const val EXTRACTOR_VERSION = 3
 
         @Volatile
         private var instance: GamePackageManager? = null
