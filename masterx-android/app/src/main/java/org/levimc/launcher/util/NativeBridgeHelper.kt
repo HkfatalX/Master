@@ -17,6 +17,12 @@ object NativeBridgeHelper {
     @Volatile
     private var gxcoreLoaded = false
 
+    @Volatile
+    private var gxcoreError: String? = null
+
+    @JvmStatic
+    fun lastGxCoreError(): String? = gxcoreError
+
     @JvmStatic
     fun getAppContext(): Context {
         return LauncherApplication.context
@@ -35,7 +41,8 @@ object NativeBridgeHelper {
                     System.loadLibrary("gxcore")
                     gxcoreLoaded = true
                     true
-                } catch (_: Throwable) {
+                } catch (t: Throwable) {
+                    gxcoreError = t.javaClass.simpleName + ": " + (t.message ?: "no message")
                     false
                 }
             }
