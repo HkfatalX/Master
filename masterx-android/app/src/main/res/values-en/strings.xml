@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MasterX</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_library">Library</string>
+    <string name="tab_worlds">Worlds</string>
+    <string name="tab_about">About</string>
+
+    <string name="home_title">Welcome to MasterX</string>
+    <string name="home_subtitle">Your hub to open Minecraft and organize worlds, packs and addons.</string>
+    <string name="mc_installed">Minecraft installed</string>
+    <string name="mc_version">Version %1$s</string>
+    <string name="mc_missing">Minecraft not found</string>
+    <string name="mc_missing_desc">Install the official Minecraft Bedrock from Google Play to play.</string>
+    <string name="btn_play">Play</string>
+    <string name="btn_store">Open Google Play</string>
+    <string name="play_error">Could not open Minecraft.</string>
+
+    <string name="lib_title">Library</string>
+    <string name="lib_empty">Nothing here yet. Import .mcpack, .mcaddon, .mcworld or .mctemplate files.</string>
+    <string name="btn_import">Import files</string>
+    <string name="lib_imported">%1$d file(s) imported</string>
+    <string name="lib_import_none">No files imported.</string>
+    <string name="btn_open_mc">Open in Minecraft</string>
+    <string name="btn_share">Share</string>
+    <string name="btn_delete">Delete</string>
+    <string name="delete_title">Delete file?</string>
+    <string name="delete_text">%1$s will be removed from the MasterX library.</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Delete</string>
+    <string name="open_error">Could not open in Minecraft.</string>
+
+    <string name="type_world">Worlds</string>
+    <string name="type_pack">Packs</string>
+    <string name="type_addon">Addons</string>
+    <string name="type_template">Templates</string>
+    <string name="type_other">Other</string>
+
+    <string name="worlds_title">World backup</string>
+    <string name="worlds_intro">Pick the minecraftWorlds folder of Minecraft. MasterX creates a .mcworld file for each world in your Library.</string>
+    <string name="worlds_hint">Tip: it is usually at Android/data/com.mojang.minecraftpe/files/games/com.mojang/minecraftWorlds. On Android 13 or newer the system may block the Android/data folder; in that case set Minecraft storage to External in the game settings and pick games/com.mojang/minecraftWorlds.</string>
+    <string name="btn_pick_folder">Pick folder</string>
+    <string name="btn_change_folder">Change folder</string>
+    <string name="worlds_none">No worlds found in this folder.</string>
+    <string name="btn_backup">Back up</string>
+    <string name="backup_working">Saving %1$s…</string>
+    <string name="backup_done">Backup saved to Library: %1$s</string>
+    <string name="backup_error">Backup failed.</string>
+
+    <string name="about_title">About MasterX</string>
+    <string name="about_text">MasterX does not include Minecraft. It uses the official Minecraft Bedrock you already have installed. Minecraft is a trademark of Mojang AB; this app is independent and not affiliated with Mojang or Microsoft.</string>
+    <string name="about_version">Version %1$s</string>
+</resources>
