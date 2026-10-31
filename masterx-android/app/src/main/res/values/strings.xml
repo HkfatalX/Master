@@ -1106,4 +1106,6 @@
     <string name="mx_cf_key_open_site">Get a key</string>
     <string name="mx_nav_java">Java 🔒</string>
     <string name="mx_java_locked">Java Edition support is coming soon.</string>
+    <string name="mx_java_row_title">Java Edition 🔒</string>
+    <string name="mx_java_row_sub">Coming soon</string>
 </resources>

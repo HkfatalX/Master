@@ -43,6 +43,12 @@ public final class NativeImageGuard {
             return false;
         }
         if (!NativeBridgeHelper.ensureGxCoreLoaded()) {
+            // No image rewriting available: accept only valid, untouched ELF images
+            // (the origin of the game is verified before extraction).
+            if (isElf(soFile)) {
+                markClean(soFile);
+                return true;
+            }
             return false;
         }
         if (ignoreMarker) {
@@ -76,6 +82,15 @@ public final class NativeImageGuard {
         } catch (Exception e) {
             CLEAN_FILES.remove(soFile.getAbsolutePath());
             clearCleanMarker(soFile);
+            return false;
+        }
+    }
+
+    private static boolean isElf(File file) {
+        try (java.io.FileInputStream in = new java.io.FileInputStream(file)) {
+            byte[] magic = new byte[4];
+            return in.read(magic) == 4 && magic[0] == 0x7f && magic[1] == 'E' && magic[2] == 'L' && magic[3] == 'F';
+        } catch (IOException e) {
             return false;
         }
     }

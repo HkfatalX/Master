@@ -1088,4 +1088,6 @@
     <string name="mx_cf_key_open_site">Pegar chave</string>
     <string name="mx_nav_java">Java 🔒</string>
     <string name="mx_java_locked">O suporte ao Minecraft Java está em desenvolvimento e ainda está bloqueado.</string>
+    <string name="mx_java_row_title">Java Edition 🔒</string>
+    <string name="mx_java_row_sub">Em breve — bloqueado</string>
 </resources>

@@ -10,6 +10,7 @@ import android.os.SystemClock
 import android.util.Log
 import org.levimc.launcher.core.versions.GameVersion
 import org.levimc.launcher.util.LauncherStorage
+import org.levimc.launcher.util.GenuineMinecraft
 import org.levimc.launcher.util.NativeBridgeHelper
 import org.levimc.launcher.util.NativeImageGuard
 import java.io.File
@@ -130,6 +131,11 @@ class GamePackageManager private constructor(
         }
 
         val apkFiles = collectApkFiles()
+        if (!NativeBridgeHelper.ensureGxCoreLoaded()) {
+            val problem = GenuineMinecraft.verify(context, apkFiles, version != null && !version.isInstalled)
+            if (problem != null) throw IllegalStateException(problem)
+            report("Genuine Minecraft verified (Google Play); running with the MasterX loader")
+        }
         val manifestString = buildExtractionManifest(apkFiles)
         val manifestFile = File(outputDir, ".extraction_manifest")
         val markerMatches = try {
@@ -526,6 +532,10 @@ class GamePackageManager private constructor(
         val fileName = toLibraryFileName(name)
         val normalizedName = normalizeLibraryName(name)
         val startedAt = SystemClock.elapsedRealtime()
+
+        if (normalizedName == "gxcore" && !NativeBridgeHelper.ensureGxCoreLoaded()) {
+            return LibraryLoadResult(normalizedName, fileName, "MasterX loader", true, elapsedSince(startedAt), "gxcore not used")
+        }
 
         if (systemLoadedLibs.contains(fileName)) {
             val source = if (normalizedName == "gxcore") {

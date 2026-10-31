@@ -928,6 +928,12 @@ import okhttp3.OkHttpClient;
         InstancePopupAdapter adapter = new InstancePopupAdapter(allVersions, selectedVersion);
         recycler.setAdapter(adapter);
 
+        View javaRow = popupView.findViewById(R.id.java_locked_row);
+        if (javaRow != null) {
+            javaRow.setOnClickListener(v ->
+                    android.widget.Toast.makeText(this, R.string.mx_java_locked, android.widget.Toast.LENGTH_SHORT).show());
+        }
+
         android.widget.EditText searchInput = popupView.findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

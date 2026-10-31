@@ -20,6 +20,9 @@ object NativeBridgeHelper {
     @Volatile
     private var gxcoreError: String? = null
 
+    @Volatile
+    private var gxcoreFailed = false
+
     @JvmStatic
     fun lastGxCoreError(): String? = gxcoreError
 
@@ -33,6 +36,9 @@ object NativeBridgeHelper {
         if (gxcoreLoaded) {
             return true
         }
+        if (gxcoreFailed) {
+            return false
+        }
         return synchronized(this) {
             if (gxcoreLoaded) {
                 true
@@ -43,6 +49,7 @@ object NativeBridgeHelper {
                     true
                 } catch (t: Throwable) {
                     gxcoreError = t.javaClass.simpleName + ": " + (t.message ?: "no message")
+                    gxcoreFailed = true
                     false
                 }
             }
@@ -81,7 +88,9 @@ object NativeBridgeHelper {
     @JvmStatic
     fun loadMinecraftRuntime(libraryPath: String) {
         if (!ensureGxCoreLoaded()) {
-            throw UnsatisfiedLinkError("Failed to load gxcore for the Minecraft runtime")
+            // gxcore is not available in this build: load the genuine library directly.
+            System.load(libraryPath)
+            return
         }
         nativeLoadMinecraftRuntime(libraryPath)?.let { error ->
             throw UnsatisfiedLinkError(error)

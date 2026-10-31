@@ -245,11 +245,6 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
             }
         });
-        View javaTab = findViewById(R.id.nav_tab_java);
-        if (javaTab != null) {
-            javaTab.setOnClickListener(v ->
-                    android.widget.Toast.makeText(this, R.string.mx_java_locked, android.widget.Toast.LENGTH_SHORT).show());
-        }
 
         refreshNavAccountUI();
         refreshNewsBadge();
