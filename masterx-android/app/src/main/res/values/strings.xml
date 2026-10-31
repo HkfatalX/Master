@@ -1110,4 +1110,9 @@
     <string name="mx_java_row_sub">Coming soon</string>
     <string name="mx_copy_log">Copy log</string>
     <string name="mx_log_copied">Log copied</string>
+    <string name="mx_update_downloading_title">Downloading update</string>
+    <string name="mx_whats_new_title">What\'s new in %1$s</string>
+    <string name="mx_whats_new_ok">Got it</string>
+    <string name="mx_whats_new_body">• Update window fixed: no more duplicate pop-ups\n• Download now shows a real progress bar with MB\n• This \"What\'s new\" sheet after every update\n• Crash screen with Copy log button\n• Java Edition shown (locked) in the instance picker\n• CurseForge key can be entered inside the app</string>
+    <string name="mx_whats_new_btn">What\'s new in this version</string>
 </resources>

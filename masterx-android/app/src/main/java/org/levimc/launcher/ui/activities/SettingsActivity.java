@@ -481,6 +481,16 @@ public class SettingsActivity extends BaseActivity {
             btnSelectImage.setTextColor(Color.WHITE);
         }
         
+        Button btnWhatsNew = findViewById(R.id.btn_whats_new);
+        if (btnWhatsNew != null) {
+            btnWhatsNew.setOnClickListener(v -> {
+                try {
+                    String ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                    org.levimc.launcher.util.WhatsNew.show(this, ver,
+                            getSharedPreferences("masterx_prefs", MODE_PRIVATE));
+                } catch (Exception ignored) { }
+            });
+        }
         Button btnCheckUpdate = findViewById(R.id.btn_check_update);
         if (btnCheckUpdate != null && accent != 0) {
             btnCheckUpdate.setBackgroundTintList(ColorStateList.valueOf(accent));

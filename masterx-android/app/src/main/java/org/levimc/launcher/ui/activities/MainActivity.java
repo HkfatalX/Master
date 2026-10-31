@@ -127,6 +127,7 @@ import okhttp3.OkHttpClient;
         setupManagersAndHandlers();
         if (!isInstanceShortcutIntent()) {
             new GithubReleaseUpdater(this, "HkfatalX", "Master", permissionResultLauncher).checkUpdateOnLaunch();
+            org.levimc.launcher.util.WhatsNew.showIfUpdated(this);
         }
         showEulaIfNeeded();
         setupOnBackPressedCallback();

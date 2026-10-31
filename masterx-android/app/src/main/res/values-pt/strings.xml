@@ -1092,4 +1092,9 @@
     <string name="mx_java_row_sub">Em breve — bloqueado</string>
     <string name="mx_copy_log">Copiar log</string>
     <string name="mx_log_copied">Log copiado!</string>
+    <string name="mx_update_downloading_title">Baixando atualização</string>
+    <string name="mx_whats_new_title">Novidades da %1$s</string>
+    <string name="mx_whats_new_ok">Entendi</string>
+    <string name="mx_whats_new_body">• Janela de atualização corrigida: sem pop-up duplicado por baixo\n• Download com barra de progresso real e MB baixados\n• Esta tela de Novidades depois de cada atualização\n• Tela de erro com botão Copiar log\n• Java Edition aparece (bloqueado) na escolha de instância\n• Chave do CurseForge informada dentro do app</string>
+    <string name="mx_whats_new_btn">Ver novidades desta versão</string>
 </resources>
