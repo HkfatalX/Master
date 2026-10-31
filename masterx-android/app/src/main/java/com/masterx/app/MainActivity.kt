@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.masterx.app.data.LibraryRepo
+import com.masterx.app.store.LibraryRepo
 import com.masterx.app.ui.AboutScreen
 import com.masterx.app.ui.HomeScreen
 import com.masterx.app.ui.LibraryScreen

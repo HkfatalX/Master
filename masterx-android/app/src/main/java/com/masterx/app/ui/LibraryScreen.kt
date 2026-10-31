@@ -38,9 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.masterx.app.R
-import com.masterx.app.data.LibraryItem
-import com.masterx.app.data.LibraryRepo
-import com.masterx.app.data.Minecraft
+import com.masterx.app.store.LibraryItem
+import com.masterx.app.store.LibraryRepo
+import com.masterx.app.store.Minecraft
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

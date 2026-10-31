@@ -34,9 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.masterx.app.R
-import com.masterx.app.data.LibraryRepo
-import com.masterx.app.data.WorldBackup
-import com.masterx.app.data.WorldEntry
+import com.masterx.app.store.LibraryRepo
+import com.masterx.app.store.WorldBackup
+import com.masterx.app.store.WorldEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

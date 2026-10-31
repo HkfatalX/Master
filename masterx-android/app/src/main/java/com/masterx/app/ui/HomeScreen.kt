@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.masterx.app.R
-import com.masterx.app.data.Minecraft
+import com.masterx.app.store.Minecraft
 
 @Composable
 fun HomeScreen(refreshKey: Int) {
