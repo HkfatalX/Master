@@ -1,0 +1,6 @@
+[submodule "masterx-android/app/src/main/cpp/preloader"]
+	path = masterx-android/app/src/main/cpp/preloader
+	url = https://github.com/LiteLDev/preloader-android
+[submodule "masterx-android/app/src/main/cpp/libHttpClient"]
+	path = masterx-android/app/src/main/cpp/libHttpClient
+	url = https://github.com/microsoft/libHttpClient
