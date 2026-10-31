@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "2026-10-31-masterx-1",
+      "title": "Bem-vindo ao MasterX",
+      "summary": "MasterX roda o Minecraft Bedrock dentro do app, com instâncias, mods, mundos e muito mais. Baseado no LeviLauncher (Apache-2.0).",
+      "publishedAt": "2026-10-31T12:00:00Z",
+      "category": "Update",
+      "url": "",
+      "important": false,
+      "notify": false
+    }
+  ]
+}

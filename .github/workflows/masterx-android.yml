@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'masterx-android/**'
+      - '.gitmodules'
       - '.github/workflows/masterx-android.yml'
   workflow_dispatch:
 
@@ -13,32 +14,59 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+      - name: Android SDK pieces
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-36" "build-tools;35.0.0" "ndk;28.2.13676358" > /dev/null
+
+      - name: Firebase placeholder (sem segredos)
+        working-directory: masterx-android
+        run: |
+          cat > app/google-services.json <<'JSON'
+          {
+            "project_info": { "project_number": "000000000000", "project_id": "masterx-placeholder", "storage_bucket": "masterx-placeholder.appspot.com" },
+            "client": [ {
+              "client_info": { "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+                               "android_client_info": { "package_name": "com.masterx.launcher" } },
+              "oauth_client": [],
+              "api_key": [ { "current_key": "AIzaSyPlaceholderKeyForMasterXBuild00000" } ],
+              "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+            } ],
+            "configuration_version": "1"
+          }
+          JSON
+          echo "curseforge.api_key=${{ secrets.CURSEFORGE_API_KEY }}" >> local.properties
 
       - name: Build APK
+        working-directory: masterx-android
         run: |
           set +e
-          gradle -p masterx-android assembleDebug --no-daemon --stacktrace > build.log 2>&1
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace \
+            -PmxVersionName=1.0.${{ github.run_number }} -PmxVersionCode=${{ github.run_number }} > ../build.log 2>&1
           code=$?
           if [ $code -ne 0 ]; then
-            grep -E "^e: |error:|FAILED|What went wrong|Caused by|Could not|AAPT|Execution failed" -A2 build.log | head -40 | while IFS= read -r l; do echo "::error::${l:0:400}"; done
+            grep -E "^e: |error:|FAILED|What went wrong|Caused by|Could not|CMake Error|fatal error|Execution failed|ninja:|AAPT|Unresolved|cannot find symbol" -A3 ../build.log | head -70 | while IFS= read -r l; do echo "::error::${l:0:380}"; done
           fi
           exit $code
 
       - name: Rename APK
         run: |
           mkdir -p out
-          cp masterx-android/app/build/outputs/apk/debug/app-debug.apk out/MasterX.apk
+          cp masterx-android/app/build/outputs/apk/debug/*.apk out/MasterX.apk
+          ls -la out
 
       - uses: actions/upload-artifact@v4
         with:
@@ -48,6 +76,6 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: masterx-build-${{ github.run_number }}
-          name: MasterX build ${{ github.run_number }}
+          tag_name: v1.0.${{ github.run_number }}
+          name: MasterX 1.0.${{ github.run_number }}
           files: out/MasterX.apk
