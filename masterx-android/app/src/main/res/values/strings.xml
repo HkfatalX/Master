@@ -1108,4 +1108,6 @@
     <string name="mx_java_locked">Java Edition support is coming soon.</string>
     <string name="mx_java_row_title">Java Edition 🔒</string>
     <string name="mx_java_row_sub">Coming soon</string>
+    <string name="mx_copy_log">Copy log</string>
+    <string name="mx_log_copied">Log copied</string>
 </resources>

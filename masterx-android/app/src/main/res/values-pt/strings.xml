@@ -1090,4 +1090,6 @@
     <string name="mx_java_locked">O suporte ao Minecraft Java está em desenvolvimento e ainda está bloqueado.</string>
     <string name="mx_java_row_title">Java Edition 🔒</string>
     <string name="mx_java_row_sub">Em breve — bloqueado</string>
+    <string name="mx_copy_log">Copiar log</string>
+    <string name="mx_log_copied">Log copiado!</string>
 </resources>

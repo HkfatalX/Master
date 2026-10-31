@@ -1,6 +1,10 @@
 package org.levimc.launcher.ui.activities
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +21,7 @@ class CrashActivity : BaseActivity() {
 
     private var executor = Executors.newSingleThreadExecutor()
     private var logPath: String? = null
+    private var condensedText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +56,16 @@ class CrashActivity : BaseActivity() {
             navigateToMain()
         }
         
+        findViewById<Button>(R.id.btn_copy_log).apply {
+            DynamicAnim.applyPressScale(this)
+            setOnClickListener {
+                val text = condensedText.ifBlank { tvDetails.text.toString() }
+                val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                cm.setPrimaryClip(ClipData.newPlainText("MasterX log", text.take(20000)))
+                Toast.makeText(this@CrashActivity, R.string.mx_log_copied, Toast.LENGTH_SHORT).show()
+            }
+        }
+
         btnShare.setOnClickListener {
             shareLogFile()
         }
@@ -79,8 +94,8 @@ class CrashActivity : BaseActivity() {
                     try {
                         val f = File(logPath!!)
                         if (f.exists() && f.isFile) {
-                            val content = f.readText()
-                            val maxLength = 50000
+                            val content = condense(f.readText())
+                            val maxLength = 12000
                             if (content.length > maxLength) {
                                 append(content.substring(0, maxLength))
                                 append("\n\n... [truncated, full log in file] ...")
@@ -100,11 +115,21 @@ class CrashActivity : BaseActivity() {
             }
 
             if (!isFinishing && !isDestroyed) {
+                condensedText = detailsText
                 runOnUiThread {
                     tvDetails.text = detailsText
                 }
             }
         }
+    }
+
+    // Drops the huge /proc/self/maps dump (lines like "7627e9f000-7627eef000 r-- ...")
+    // so the useful part (signal, abort message, backtrace, launch steps) stays short.
+    private fun condense(raw: String): String {
+        val map = Regex("^\\s*[0-9a-f]{8,}-[0-9a-f]{8,}\\s+[r-][w-][x-][ps-]\\s.*$")
+        val kept = raw.lineSequence().filterNot { map.matches(it) }.toList()
+        val dropped = raw.lineSequence().count() - kept.size
+        return kept.joinToString("\n") + if (dropped > 0) "\n\n[$dropped linhas de mapa de memoria omitidas]" else ""
     }
 
     override fun onNewIntent(intent: Intent) {
