@@ -1099,4 +1099,9 @@
     <string name="bg_media_blur_unavailable">Android 12+</string>
     <string name="screenshot_saved">Screenshot saved</string>
     <string name="backup_select_downloads">Select the Downloads folder to save backups in Downloads/MasterX/Backups.</string>
+    <string name="mx_cf_key_title">CurseForge API key</string>
+    <string name="mx_cf_key_message">CurseForge needs a free API key. Create one at console.curseforge.com, paste it here and it stays saved on this device.</string>
+    <string name="mx_cf_key_hint">Paste your key</string>
+    <string name="mx_cf_key_save">Save</string>
+    <string name="mx_cf_key_open_site">Get a key</string>
 </resources>

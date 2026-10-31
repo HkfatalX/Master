@@ -20,7 +20,30 @@ import okhttp3.Response;
 public class CurseForgeClient {
     private static final String TAG = "CurseForgeClient";
     private static final String BASE_URL = "https://api.curseforge.com";
-    private static final String API_KEY = BuildConfig.CURSEFORGE_API_KEY;
+    private static final String PREFS = "masterx_prefs";
+    private static final String PREF_KEY = "curseforge_api_key";
+    private static volatile String userKey = "";
+
+    public static void loadSavedKey(android.content.Context context) {
+        userKey = context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE)
+                .getString(PREF_KEY, "");
+    }
+
+    public static void saveKey(android.content.Context context, String key) {
+        userKey = key == null ? "" : key.trim();
+        context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE)
+                .edit().putString(PREF_KEY, userKey).apply();
+    }
+
+    public static boolean hasKey() {
+        return !apiKey().isEmpty();
+    }
+
+    private static String apiKey() {
+        if (userKey != null && !userKey.isEmpty()) return userKey;
+        String built = BuildConfig.CURSEFORGE_API_KEY;
+        return built == null ? "" : built;
+    }
 
     public static final int GAME_ID_MINECRAFT = 78022;
 
@@ -75,7 +98,7 @@ public class CurseForgeClient {
 
         Request request = new Request.Builder()
                 .url(urlBuilder.build())
-                .addHeader("x-api-key", API_KEY)
+                .addHeader("x-api-key", apiKey())
                 .addHeader("Accept", "application/json")
                 .build();
 
@@ -107,7 +130,7 @@ public class CurseForgeClient {
         String url = BASE_URL + "/v1/mods/" + contentId + "/description";
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("x-api-key", API_KEY)
+                .addHeader("x-api-key", apiKey())
                 .addHeader("Accept", "application/json")
                 .build();
 
@@ -142,7 +165,7 @@ public class CurseForgeClient {
 
         Request request = new Request.Builder()
                 .url(urlBuilder.build())
-                .addHeader("x-api-key", API_KEY)
+                .addHeader("x-api-key", apiKey())
                 .addHeader("Accept", "application/json")
                 .build();
 

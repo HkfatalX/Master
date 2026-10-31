@@ -1081,4 +1081,9 @@
     <string name="batch_transferring">Transferindo %1$d de %2$d…</string>
     <string name="batch_result">%1$d concluídos, %2$d falharam</string>
     <string name="choose_export_folder">Escolher pasta de exportação</string>
+    <string name="mx_cf_key_title">Chave de API do CurseForge</string>
+    <string name="mx_cf_key_message">O CurseForge precisa de uma chave de API grátis. Crie em console.curseforge.com, cole aqui e ela fica salva neste aparelho.</string>
+    <string name="mx_cf_key_hint">Cole a sua chave</string>
+    <string name="mx_cf_key_save">Salvar</string>
+    <string name="mx_cf_key_open_site">Pegar chave</string>
 </resources>

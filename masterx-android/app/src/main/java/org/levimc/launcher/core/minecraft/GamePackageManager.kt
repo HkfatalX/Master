@@ -182,6 +182,7 @@ class GamePackageManager private constructor(
             val apkPaths = apkFiles.map { it.absolutePath }
             apkPaths.forEach { extractFromApk(it, outputDir, getDeviceAbi()) }
         }
+        ensureLauncherLibcxx(outputDir)
         verifyLibraries(outputDir)
 
         if (cacheRequiredLibs.all { File(outputDir, it).let { f -> f.exists() && f.length() > 0 } }) {
@@ -343,6 +344,27 @@ class GamePackageManager private constructor(
         }
         if (!file.setReadOnly() && file.canWrite()) {
             throw IOException("Failed to keep file read-only: ${file.absolutePath}")
+        }
+    }
+
+    /**
+     * Some Minecraft builds do not ship libc++_shared.so. In that case reuse the copy bundled
+     * with the launcher (same NDK C++ runtime) so the game can still link against it.
+     */
+    private fun ensureLauncherLibcxx(dir: File) {
+        val target = File(dir, "libc++_shared.so")
+        if (target.exists() && target.length() > 0) return
+        val own = File(context.applicationInfo.nativeLibraryDir, "libc++_shared.so")
+        if (!own.exists() || own.length() == 0L) {
+            report("libc++_shared.so missing from Minecraft and from launcher dir: ${own.parent}")
+            return
+        }
+        try {
+            if (target.exists()) target.delete()
+            own.inputStream().use { input -> copyStreamToReadOnlyFile(input, target) }
+            report("Using launcher libc++_shared.so as fallback")
+        } catch (e: Exception) {
+            report("Fallback libc++_shared.so failed: ${e.message}")
         }
     }
 
@@ -548,7 +570,7 @@ class GamePackageManager private constructor(
                 LibraryLoadResult(normalizedName, fileName, source, false, elapsedSince(startedAt), detail)
             }
         } else {
-            val detail = "$fileName not found in $nativeLibDir"
+            val detail = "$fileName not found in $nativeLibDir (found: ${File(nativeLibDir).list()?.sorted()?.joinToString() ?: "none"})"
             Log.w(TAG, detail)
             LibraryLoadResult(normalizedName, fileName, source, false, elapsedSince(startedAt), detail)
         }

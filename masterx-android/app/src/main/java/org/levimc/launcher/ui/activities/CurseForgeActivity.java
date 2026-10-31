@@ -85,9 +85,37 @@ public class CurseForgeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_curseforge);
         client = CurseForgeClient.getInstance();
+        CurseForgeClient.loadSavedKey(this);
         setupData();
         initViews();
-        loadContent();
+        if (CurseForgeClient.hasKey()) {
+            loadContent();
+        } else {
+            promptForKey();
+        }
+    }
+
+    private void promptForKey() {
+        final EditText input = new EditText(this);
+        input.setSingleLine(true);
+        input.setHint(R.string.mx_cf_key_hint);
+        int pad = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        android.widget.FrameLayout box = new android.widget.FrameLayout(this);
+        box.setPadding(pad, pad / 2, pad, 0);
+        box.addView(input);
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.mx_cf_key_title)
+                .setMessage(R.string.mx_cf_key_message)
+                .setView(box)
+                .setPositiveButton(R.string.mx_cf_key_save, (d, w) -> {
+                    CurseForgeClient.saveKey(this, input.getText().toString());
+                    loadContent();
+                })
+                .setNeutralButton(R.string.mx_cf_key_open_site, (d, w) ->
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                android.net.Uri.parse("https://console.curseforge.com/"))))
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void setupData() {
@@ -267,6 +295,10 @@ public class CurseForgeActivity extends BaseActivity {
                         handler.post(() -> {
                             if (isFinishing() || isDestroyed() || request != requestSequence) return;
                             loadingProgress.setVisibility(View.GONE);
+                            String errText = String.valueOf(error.getMessage());
+                            if (errText.contains("code=401") || errText.contains("code=403")) {
+                                promptForKey();
+                            }
                             if (adapter.getItemCount() == 0) {
                                 recyclerView.setVisibility(View.GONE);
                                 emptyMessage.setText(getString(R.string.error_message_format, error.getMessage()));
