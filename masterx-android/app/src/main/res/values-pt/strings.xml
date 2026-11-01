@@ -1095,6 +1095,12 @@
     <string name="mx_update_downloading_title">Baixando atualização</string>
     <string name="mx_whats_new_title">Novidades da %1$s</string>
     <string name="mx_whats_new_ok">Entendi</string>
-    <string name="mx_whats_new_body">• Janela de atualização corrigida: sem pop-up duplicado por baixo\n• Download com barra de progresso real e MB baixados\n• Esta tela de Novidades depois de cada atualização\n• Tela de erro com botão Copiar log\n• Java Edition aparece (bloqueado) na escolha de instância\n• Chave do CurseForge informada dentro do app</string>
+    <string name="mx_whats_new_body">• Novo topo da tela inicial: saudação e etiquetas de edição\n• Janela de atualização corrigida: sem pop-up duplicado por baixo\n• Download com barra de progresso real e MB baixados\n• Esta tela de Novidades depois de cada atualização\n• Tela de erro com botão Copiar log\n• Java Edition aparece (bloqueado) na escolha de instância\n• Chave do CurseForge informada dentro do app</string>
     <string name="mx_whats_new_btn">Ver novidades desta versão</string>
+    <string name="mx_chip_official">Bedrock · Oficial ✓</string>
+    <string name="mx_chip_java">Java · em breve 🔒</string>
+    <string name="mx_greet_morning">Bom dia</string>
+    <string name="mx_greet_afternoon">Boa tarde</string>
+    <string name="mx_greet_night">Boa noite</string>
+    <string name="mx_greet_tail">bora jogar?</string>
 </resources>

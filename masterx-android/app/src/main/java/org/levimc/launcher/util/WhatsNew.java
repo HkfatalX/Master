@@ -27,12 +27,6 @@ public final class WhatsNew {
         String seen = prefs.getString(KEY_SEEN, null);
         if (current == null || current.equals(seen)) return;
         shownThisProcess = true;
-        // No stored version: a fresh install gets no sheet; an in-place update (older builds
-        // never stored the version) does.
-        if (seen == null && !wasUpdated(activity)) {
-            prefs.edit().putString(KEY_SEEN, current).apply();
-            return;
-        }
         show(activity, current, prefs);
     }
 

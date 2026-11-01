@@ -123,11 +123,12 @@ import okhttp3.OkHttpClient;
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         closeLauncherRestartAfterFirstDraw();
+        bindHomeGreeting();
         setupNavBar();
         setupManagersAndHandlers();
         if (!isInstanceShortcutIntent()) {
             new GithubReleaseUpdater(this, "HkfatalX", "Master", permissionResultLauncher).checkUpdateOnLaunch();
-            org.levimc.launcher.util.WhatsNew.showIfUpdated(this);
+            binding.getRoot().postDelayed(() -> org.levimc.launcher.util.WhatsNew.showIfUpdated(this), 1200);
         }
         showEulaIfNeeded();
         setupOnBackPressedCallback();
@@ -604,6 +605,14 @@ import okhttp3.OkHttpClient;
         }
 
         viewModel.getModsLiveData().observe(this, this::updateModsUI);
+    }
+
+    private void bindHomeGreeting() {
+        android.widget.TextView greeting = findViewById(R.id.mx_greeting);
+        if (greeting == null) return;
+        int h = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
+        int res = h < 12 ? R.string.mx_greet_morning : (h < 18 ? R.string.mx_greet_afternoon : R.string.mx_greet_night);
+        greeting.setText(getString(res) + ", " + getString(R.string.mx_greet_tail));
     }
 
     private void updateViewModelVersion() {
