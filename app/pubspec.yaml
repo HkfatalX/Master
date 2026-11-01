@@ -12,7 +12,7 @@ dependencies:
   shared_preferences: ^2.2.3
   web_socket_channel: ^3.0.0
   android_intent_plus: ^5.0.0
-  file_picker: ^8.1.2
+  file_picker: ^10.3.10
 
 dev_dependencies:
   flutter_test:
