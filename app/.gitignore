@@ -1,0 +1,10 @@
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+pubspec.lock
+# A pasta android/ é gerada por `flutter create` (local ou no CI) e ajustada por scripts/patch_android.py
+android/
+.idea/
+*.iml
