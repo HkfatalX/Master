@@ -60,3 +60,10 @@ flutter run
 - `.github/workflows/` compilação do APK
 
 O NEXUS não inclui jogos comerciais, BIOS nem ROMs.
+
+## Versão 0.3.0
+- Login opcional (Supabase) com favoritos/histórico sincronizados; emulação dentro do app (NES, SNES, GB/GBC, GBA,
+  Mega Drive); redução de gráfico, limite de FPS, variantes de controle; aviso de atualização via Releases.
+- Cada versão é publicada como Release `vX.Y.Z` com `NexusCloud.apk`.
+- Honesto: nada foi testado em aparelho real; streaming com vídeo (WebRTC) ainda não existe.
+- Se o cadastro pedir confirmação de e-mail, confirme pelo link recebido (ou desligue "Confirm email" no Supabase).

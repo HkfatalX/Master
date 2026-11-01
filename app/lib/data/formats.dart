@@ -4,11 +4,15 @@ class ImportedFile {
     required this.name,
     required this.size,
     this.path,
+    this.copied = false,
   });
 
   final String name;
   final int size;
   final String? path;
+
+  /// true quando o arquivo tem uma cópia privada no armazenamento do app (para jogar dentro do app).
+  final bool copied;
 
   String get ext {
     final i = name.lastIndexOf('.');
@@ -19,7 +23,7 @@ class ImportedFile {
   /// Chave para detectar duplicados: mesmo nome e mesmo tamanho.
   String get key => '${name.toLowerCase()}|$size';
 
-  Map<String, dynamic> toJson() => {'n': name, 's': size, 'p': path};
+  Map<String, dynamic> toJson() => {'n': name, 's': size, 'p': path, 'c': copied};
 
   static ImportedFile? fromJson(Object? j) {
     if (j is! Map) return null;
@@ -27,7 +31,12 @@ class ImportedFile {
     final s = j['s'];
     if (n is! String || s is! int) return null;
     final p = j['p'];
-    return ImportedFile(name: n, size: s, path: p is String ? p : null);
+    return ImportedFile(
+      name: n,
+      size: s,
+      path: p is String ? p : null,
+      copied: j['c'] == true,
+    );
   }
 }
 
@@ -62,7 +71,32 @@ const Map<String, FormatInfo> kFormats = {
   'n64': FormatInfo(['Nintendo 64'], ['RetroArch']),
   'z64': FormatInfo(['Nintendo 64'], ['RetroArch']),
   'v64': FormatInfo(['Nintendo 64'], ['RetroArch']),
+  'md': FormatInfo(['Mega Drive'], ['RetroArch']),
+  'gen': FormatInfo(['Mega Drive'], ['RetroArch']),
+  'smd': FormatInfo(['Mega Drive'], ['RetroArch']),
 };
+
+/// Extensões que o NEXUS roda dentro do app (EmulatorJS) e o núcleo usado.
+const Map<String, String> kEmuCores = {
+  'nes': 'nes',
+  'sfc': 'snes',
+  'smc': 'snes',
+  'gb': 'gb',
+  'gbc': 'gb',
+  'gba': 'gba',
+  'md': 'segaMD',
+  'gen': 'segaMD',
+  'smd': 'segaMD',
+};
+
+/// Núcleo para jogar dentro do app, ou null se o formato não for suportado (ou o arquivo for inválido).
+String? emuCoreFor(ImportedFile f) {
+  if (f.size <= 0) return null;
+  return kEmuCores[f.ext];
+}
+
+/// Tamanho máximo para guardar uma cópia privada (evita encher o armazenamento).
+const int kMaxEmuCopyBytes = 64 * 1024 * 1024;
 
 enum FileStatus { ok, unknownFormat, empty }
 

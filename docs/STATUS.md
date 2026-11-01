@@ -1,4 +1,4 @@
-# Status do NEXUS CLOUD (0.1.0)
+# Status do NEXUS CLOUD (0.3.0)
 
 Última atualização: 2026-11-01. Nada aqui foi executado em aparelho real ainda.
 
@@ -30,22 +30,42 @@
 - **Provedores de nuvem**: informa custo, requisitos e limites de GeForce NOW, Xbox Cloud Gaming e Steam Link e
   abre o app/site oficial. Não consulta fila, não cria sessão, não simula disponibilidade. Conectar conta: pendente.
 - **Roblox**: abre o app oficial.
-- **APK sem login**: o build publica `NexusCloud.apk` na aba Releases (tag `latest`).
+- **APK sem login**: o build publica `NexusCloud.apk` na aba Releases (tag da versão, ex.: `v0.3.0`).
 - O app não depende de nenhum servidor próprio. Streaming próprio continua **não funcional** (sem vídeo).
+
+## Adicionado na etapa 4 (0.3.0)
+- **Login (Supabase, plano grátis)**: e-mail e senha, opcional. Favoritos, histórico e nome sincronizam (união dos dois
+  lados). RLS ligado: cada usuário só vê os próprios dados. Se o projeto exigir confirmação de e-mail, o app avisa.
+- **Emulação dentro do app** (EmulatorJS no WebView): NES, SNES, Game Boy/Color, GBA, Mega Drive. O arquivo é copiado
+  (até 64 MB) para a área privada e servido só em 127.0.0.1. O núcleo do emulador baixa do CDN oficial na 1ª vez
+  (precisa de internet). Não vem ROM nem BIOS.
+- **Gráficos**: reduz a resolução renderizada dos jogos web (50/75/100%) e limita FPS (30/45/60) por script injetado,
+  melhor esforço. Em emuladores o FPS não é limitado.
+- **Controles**: virtual sobre jogos web (setas+ZX, WASD+espaço, setas+espaço), estilo dos botões, transparência, tamanho.
+- **Servidores de teste** (echo.websocket.org, testingapis, sondehub) nas Configurações: só testam conexão,
+  latência e comandos. **Não transmitem vídeo.** O SondeHub não é servidor de eco.
+- **Atualizações**: o app consulta a última Release do GitHub, mostra aviso na Início e botão em Configurações.
+  O APK é assinado com chave de debug diferente a cada build: para instalar uma versão nova pode ser preciso
+  desinstalar a antiga.
+- Só ficam as releases de versão `vX.Y.Z` do NEXUS CLOUD.
 
 ## Experimental / não verificado
 - Pacotes Android do catálogo e dos emuladores foram escritos de memória; falta conferir em aparelho.
 - Compilação: depende do GitHub Actions; o resultado do primeiro build ainda não foi conferido.
 
 ## Pendente
+- **Cliente de streaming WebRTC real + servidor de referência** (vídeo, áudio, canal de dados, métricas separadas).
+  Diagnóstico atual: WebSocket + ping/pong + entrada em JSON; "FPS" é só da tela do app; sem vídeo.
+- Conta Steam (OpenID), Xbox, biblioteca universal, detecção de tecnologia de sites, catálogo web ampliado,
+  investigação de GTA V: **não feitos**.
 - **Vídeo por streaming.** Hoje a sessão remota conecta, mede latência e envia comandos, mas não
   exibe vídeo. Próximo passo: WebRTC (ou Moonlight/Sunshine) com decodificação por hardware.
 - Analógicos de controles físicos (o Android os entrega por eventos que o Flutter não repassa;
   precisa de um pequeno código nativo).
 - Contas (OAuth Steam/Microsoft) e biblioteca universal sincronizada: exigem backend para o login; não feito.
-- Login, catálogo e sincronização na nuvem (Supabase não foi criado; esquema em `database/schema.sql`).
+- Catálogo na nuvem (hoje o catálogo está no app).
 - Painel administrativo web.
-- Importar seus próprios arquivos para emuladores; integração direta com cada emulador.
+- PS1/PSP/N64/Dolphin dentro do app (hoje só abre o app do emulador instalado).
 - Assinatura própria do APK release.
 - Streaming de consoles (PS3/PS4/Xbox): só desenhado, sem implementação.
 

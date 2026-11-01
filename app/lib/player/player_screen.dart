@@ -269,7 +269,7 @@ class _PlayerScreenState extends State<PlayerScreen> with SingleTickerProviderSt
               final s = widget.state;
               final pad = VirtualGamepad(
                 controller: _pad,
-                family: widget.game.pad,
+                family: s.padFamilyFor(widget.game.pad),
                 opacity: s.padOpacity,
                 scale: s.padScale,
                 haptics: s.haptics,

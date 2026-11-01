@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../player/session.dart';
+import '../update/update.dart';
+import '../version.dart';
+import '../widgets/prefs_panel.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
+import '../util/launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.state});
@@ -19,6 +23,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _probeText;
   Color _probeColor = NX.muted;
   bool _probing = false;
+  bool _checking = false;
+  String? _updateText;
+  Color _updateColor = NX.muted;
+  UpdateInfo? _update;
 
   @override
   void initState() {
@@ -39,6 +47,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (err == null) {
         _probeText = _url.text.trim().isEmpty ? 'Servidor removido.' : 'Endereço salvo.';
         _probeColor = NX.muted;
+      }
+    });
+  }
+
+  Future<void> _checkUpdate() async {
+    setState(() {
+      _checking = true;
+      _update = null;
+      _updateText = null;
+    });
+    final r = await checkForUpdate();
+    if (!mounted) return;
+    setState(() {
+      _checking = false;
+      if (!r.checked) {
+        _updateText = r.error;
+        _updateColor = NX.bad;
+      } else if (r.info == null) {
+        _updateText = 'Você já está na versão mais nova.';
+        _updateColor = NX.ok;
+      } else {
+        _update = r.info;
+        _updateText = 'Nova versão ${r.info!.version} disponível.';
+        _updateColor = NX.neon;
       }
     });
   }
@@ -133,12 +165,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              const Text(
+                'Servidores de teste (de terceiros, públicos). Servem só para testar conexão, latência e envio de '
+                'comandos. Eles NÃO transmitem vídeo nem jogos.',
+                style: TextStyle(color: NX.muted, fontSize: 12, height: 1.35),
+              ),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final e in kTestServers.entries)
+                    ActionChip(
+                      label: Text(e.key),
+                      onPressed: () => setState(() => _url.text = e.value),
+                    ),
+                ],
+              ),
               if (_probeText != null) ...[
                 const SizedBox(height: 8),
                 Text(_probeText!, style: TextStyle(color: _probeColor)),
               ],
             ]),
-            _section('Qualidade', [
+            _section('Qualidade do streaming', [
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -159,23 +207,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: const TextStyle(color: NX.muted, fontSize: 13),
               ),
             ]),
+            _section('Gráficos e desempenho', [GraphicsPrefs(state: s)]),
             _section('Controles', [
-              Text(
-                'Transparência: ${(s.padOpacity * 100).round()}%',
-                style: const TextStyle(color: NX.muted),
-              ),
-              Slider(value: s.padOpacity, min: 0.3, max: 1.0, onChanged: s.setPadOpacity),
-              Text(
-                'Tamanho: ${(s.padScale * 100).round()}%',
-                style: const TextStyle(color: NX.muted),
-              ),
-              Slider(value: s.padScale, min: 0.7, max: 1.4, onChanged: s.setPadScale),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Vibração nos botões'),
-                value: s.haptics,
-                onChanged: s.setHaptics,
-              ),
+              ControlPrefs(state: s),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text('Mostrar FPS, latência e bitrate'),
@@ -184,19 +218,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Travar em paisagem'),
+                title: const Text('Travar em paisagem (streaming)'),
                 subtitle: const Text('Desligado: o jogo gira com o aparelho'),
                 value: s.lockLandscape,
                 onChanged: s.setLockLandscape,
               ),
             ]),
+            _section('Atualizações', [
+              Text('Versão instalada: $kAppVersion', style: const TextStyle(color: NX.text)),
+              const SizedBox(height: 8),
+              OutlinedButton(
+                onPressed: _checking ? null : _checkUpdate,
+                child: Text(_checking ? 'Verificando…' : 'Verificar atualizações'),
+              ),
+              if (_updateText != null) ...[
+                const SizedBox(height: 8),
+                Text(_updateText!, style: TextStyle(color: _updateColor)),
+              ],
+              if (_update != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: FilledButton(
+                    onPressed: () => openUrl(_update!.url),
+                    child: Text('Baixar versão ${_update!.version}'),
+                  ),
+                ),
+            ]),
             _section('Sobre esta versão', [
               const Text(
-                'NEXUS CLOUD 0.1.0 (MVP)\n'
-                'Pronto: biblioteca, favoritos, histórico, controles virtuais, controles Bluetooth (botões), '
-                'abrir jogos Android e emuladores instalados, conexão segura com servidor, latência medida.\n'
-                'Pendente: vídeo por streaming (WebRTC), login/nuvem (Supabase), painel administrativo, '
-                'analógicos de controles físicos, importar seus próprios arquivos.',
+                'NEXUS CLOUD $kAppVersion\n'
+                'Feito (ainda não testado em aparelho real): jogos web e emulação (NES, SNES, Game Boy, GBA, '
+                'Mega Drive) dentro do app, login opcional (Supabase) com favoritos e histórico sincronizados, '
+                'gráficos reduzíveis, limite de FPS, variantes de controle, aviso de atualização.\n'
+                'Pendente: vídeo por streaming (WebRTC) e servidor de referência, contas Steam/Xbox, '
+                'PS1/PSP/N64 dentro do app, painel administrativo.',
                 style: TextStyle(color: NX.muted, fontSize: 13, height: 1.4),
               ),
             ]),
@@ -206,3 +261,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
+
+/// Servidores públicos de terceiros para testar conexão e comandos (não transmitem vídeo).
+const Map<String, String> kTestServers = {
+  'Eco (echo.websocket.org)': 'wss://echo.websocket.org',
+  'Eco (testingapis)': 'wss://api.testingapis.com/ws/echo',
+  'SondeHub (só conexão)': 'wss://api.sondahub.com/v1/utils/ws',
+};

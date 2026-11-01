@@ -13,3 +13,11 @@ bool isAllowedNavigation(String url, String baseHost) {
   final b = _norm(baseHost);
   return h == b || h.endsWith('.$b');
 }
+
+/// Para o emulador embutido: só a página local (http://127.0.0.1:porta).
+bool isSameOrigin(String url, int port) {
+  if (url == 'about:blank') return true;
+  final u = Uri.tryParse(url);
+  if (u == null) return false;
+  return u.scheme == 'http' && u.host == '127.0.0.1' && u.port == port;
+}

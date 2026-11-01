@@ -4,6 +4,7 @@ import '../data/catalog.dart';
 import '../models/game.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
+import '../update/update.dart';
 import '../util/launcher.dart';
 import '../widgets/game_card.dart';
 import 'files.dart';
@@ -43,6 +44,7 @@ class HomeScreen extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
+          const _UpdateBanner(),
           Row(
             children: [
               Container(
@@ -251,6 +253,62 @@ class _Shortcut extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Aviso de versão nova (checa as Releases do GitHub uma vez ao abrir; falha em silêncio).
+class _UpdateBanner extends StatefulWidget {
+  const _UpdateBanner();
+
+  @override
+  State<_UpdateBanner> createState() => _UpdateBannerState();
+}
+
+class _UpdateBannerState extends State<_UpdateBanner> {
+  static UpdateResult? _cached;
+  UpdateInfo? _info;
+  bool _hidden = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _run();
+  }
+
+  Future<void> _run() async {
+    final r = _cached ??= await checkForUpdate();
+    if (mounted) setState(() => _info = r.info);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i = _info;
+    if (i == null || _hidden) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
+      decoration: BoxDecoration(
+        color: NX.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: NX.neon.withAlpha(140)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Nova versão ${i.version} disponível',
+              style: const TextStyle(color: NX.text, fontWeight: FontWeight.w700),
+            ),
+          ),
+          FilledButton(onPressed: () => openUrl(i.url), child: const Text('Baixar')),
+          IconButton(
+            tooltip: 'Dispensar',
+            onPressed: () => setState(() => _hidden = true),
+            icon: const Icon(Icons.close, color: NX.muted, size: 18),
+          ),
+        ],
       ),
     );
   }

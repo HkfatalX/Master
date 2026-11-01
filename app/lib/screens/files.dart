@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../data/catalog.dart';
+import 'package:path_provider/path_provider.dart';
+
 import '../data/formats.dart';
+import '../emu/emu_screen.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../util/launcher.dart';
@@ -18,9 +23,23 @@ class FilesScreen extends StatelessWidget {
     try {
       final res = await FilePicker.platform.pickFiles(allowMultiple: true);
       if (res == null) return;
-      final add = [
-        for (final f in res.files) ImportedFile(name: f.name, size: f.size, path: f.path),
-      ];
+      final add = <ImportedFile>[];
+      for (final f in res.files) {
+        var path = f.path;
+        var copied = false;
+        final probe = ImportedFile(name: f.name, size: f.size, path: path);
+        if (path != null && emuCoreFor(probe) != null && f.size <= kMaxEmuCopyBytes) {
+          try {
+            final dir = Directory('${(await getApplicationSupportDirectory()).path}/roms');
+            await dir.create(recursive: true);
+            final dest = File('${dir.path}/${DateTime.now().microsecondsSinceEpoch}_${f.name.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_')}');
+            await File(path).copy(dest.path);
+            path = dest.path;
+            copied = true;
+          } catch (_) {}
+        }
+        add.add(ImportedFile(name: f.name, size: f.size, path: path, copied: copied));
+      }
       final n = s.addFiles(add);
       messenger.showSnackBar(SnackBar(content: Text('$n arquivo(s) adicionado(s).')));
     } catch (_) {
@@ -59,8 +78,8 @@ class FilesScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
         children: [
           const Text(
-            'Importe arquivos que você tem direito de usar. O NEXUS só guarda o nome, o tamanho e '
-            'o caminho; não envia nem distribui nada. BIOS e ROMs são por sua conta.',
+            'Importe arquivos que você tem direito de usar. Arquivos de console que o NEXUS '
+            'sabe rodar dentro do app são copiados para a área privada dele; nada é enviado nem distribuído. BIOS e ROMs são por sua conta.',
             style: TextStyle(color: NX.muted, fontSize: 13, height: 1.4),
           ),
           const SizedBox(height: 12),
@@ -172,6 +191,29 @@ class FilesScreen extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (emuCoreFor(f) != null)
+                  ActionChip(
+                    avatar: const Icon(Icons.play_arrow, size: 16, color: NX.neon),
+                    label: const Text('Jogar no app'),
+                    onPressed: () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final nav = Navigator.of(context);
+                      final p = f.path;
+                      if (p == null || !File(p).existsSync()) {
+                        messenger.showSnackBar(
+                          const SnackBar(content: Text('Arquivo não encontrado. Importe de novo.')),
+                        );
+                        return;
+                      }
+                      await nav.push(MaterialPageRoute<void>(
+                        builder: (_) => EmuScreen(
+                          file: File(p),
+                          core: emuCoreFor(f)!,
+                          title: f.name,
+                        ),
+                      ));
+                    },
+                  ),
                 for (final name in info.emulators)
                   ActionChip(
                     avatar: const Icon(Icons.memory, size: 16, color: NX.neon),

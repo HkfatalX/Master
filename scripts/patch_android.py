@@ -54,6 +54,24 @@ def main() -> int:
 
     text = text.replace("<application", add + "    <application", 1)
     text = re.sub(r'android:label="[^"]*"', 'android:label="NEXUS CLOUD"', text, count=1)
+    # Emulador embutido: servidor local em 127.0.0.1 usa http; libera só esse endereço.
+    if "networkSecurityConfig" not in text:
+        text = text.replace(
+            "<application",
+            '<application android:networkSecurityConfig="@xml/network_security_config"',
+            1,
+        )
+    xml_dir = path.parent / "res" / "xml"
+    xml_dir.mkdir(parents=True, exist_ok=True)
+    (xml_dir / "network_security_config.xml").write_text(
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        "<network-security-config>\n"
+        '    <domain-config cleartextTrafficPermitted="true">\n'
+        '        <domain includeSubdomains="false">127.0.0.1</domain>\n'
+        "    </domain-config>\n"
+        "</network-security-config>\n",
+        encoding="utf-8",
+    )
     path.write_text(text, encoding="utf-8")
     print("Manifesto ajustado:", path)
     return 0

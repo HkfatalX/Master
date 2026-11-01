@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +43,58 @@ extension QualityProfileX on QualityProfile {
       };
 }
 
+/// Qualidade gráfica dos jogos web: escala da resolução interna.
+enum GfxQuality { low, medium, high }
+
+extension GfxQualityX on GfxQuality {
+  String get label => switch (this) {
+        GfxQuality.low => 'Baixa (50%)',
+        GfxQuality.medium => 'Média (75%)',
+        GfxQuality.high => 'Alta (100%)',
+      };
+
+  double get scale => switch (this) {
+        GfxQuality.low => 0.5,
+        GfxQuality.medium => 0.75,
+        GfxQuality.high => 1.0,
+      };
+}
+
+/// Limites de FPS oferecidos (0 = sem limite).
+const List<int> kFpsCaps = [0, 30, 45, 60];
+
+String fpsCapLabel(int v) => v == 0 ? 'Sem limite' : '$v FPS';
+
+/// Esquema de teclas dos controles na tela dos jogos web.
+enum WebControls { off, arrowsZx, wasdSpace, arrowsSpace }
+
+extension WebControlsX on WebControls {
+  String get label => switch (this) {
+        WebControls.off => 'Desligado (só toque)',
+        WebControls.arrowsZx => 'Setas + Z/X/C/V',
+        WebControls.wasdSpace => 'WASD + Espaço/E/Q/R',
+        WebControls.arrowsSpace => 'Setas + Espaço/Enter/Z/X',
+      };
+}
+
+/// Ganchos para a nuvem (login opcional). O AppState não conhece o Supabase.
+abstract class CloudHooks {
+  void favoriteChanged(String id, bool on);
+  void played(String id, int atMs);
+  void renamed(String name);
+}
+
+/// Junta dois históricos mantendo o mais recente de cada jogo (máximo 20).
+List<HistoryEntry> mergeHistory(List<HistoryEntry> a, List<HistoryEntry> b) {
+  final best = <String, HistoryEntry>{};
+  for (final h in [...a, ...b]) {
+    final cur = best[h.gameId];
+    if (cur == null || h.atMs > cur.atMs) best[h.gameId] = h;
+  }
+  final out = best.values.toList()..sort((x, y) => y.atMs.compareTo(x.atMs));
+  return out.length > 20 ? out.sublist(0, 20) : out;
+}
+
 class HistoryEntry {
   const HistoryEntry(this.gameId, this.atMs);
 
@@ -60,7 +113,10 @@ class HistoryEntry {
 }
 
 class AppState extends ChangeNotifier {
+  static const String defaultName = 'Jogador';
+
   SharedPreferences? _prefs;
+  CloudHooks? hooks;
 
   Set<String> favorites = <String>{};
   List<HistoryEntry> history = <HistoryEntry>[];
@@ -72,7 +128,13 @@ class AppState extends ChangeNotifier {
   double padOpacity = 0.7;
   double padScale = 1.0;
   String serverUrl = '';
-  String userName = 'Jogador';
+  String userName = defaultName;
+  GfxQuality gfx = GfxQuality.high;
+  int fpsCap = 0;
+  WebControls webControls = WebControls.off;
+
+  /// -1 = automático (usa o estilo do jogo); senão, índice de PadFamily.
+  int padStyle = -1;
 
   bool get hasServer => serverUrl.isNotEmpty;
 
@@ -111,19 +173,28 @@ class AppState extends ChangeNotifier {
     padOpacity = (p.getDouble('padOpacity') ?? 0.7).clamp(0.3, 1.0);
     padScale = (p.getDouble('padScale') ?? 1.0).clamp(0.7, 1.4);
     serverUrl = p.getString('server') ?? '';
-    userName = p.getString('user') ?? 'Jogador';
+    userName = p.getString('user') ?? defaultName;
+    gfx = GfxQuality.values[(p.getInt('gfx') ?? 2).clamp(0, GfxQuality.values.length - 1)];
+    final fc = p.getInt('fpsCap') ?? 0;
+    fpsCap = kFpsCaps.contains(fc) ? fc : 0;
+    webControls = WebControls
+        .values[(p.getInt('webControls') ?? 0).clamp(0, WebControls.values.length - 1)];
+    padStyle = (p.getInt('padStyle') ?? -1).clamp(-1, PadFamily.values.length - 1);
     notifyListeners();
   }
 
   void toggleFavorite(String id) {
     if (!favorites.remove(id)) favorites.add(id);
     _prefs?.setStringList('fav', favorites.toList());
+    hooks?.favoriteChanged(id, favorites.contains(id));
     notifyListeners();
   }
 
   void addHistory(String gameId) {
     history.removeWhere((h) => h.gameId == gameId);
-    history.insert(0, HistoryEntry(gameId, DateTime.now().millisecondsSinceEpoch));
+    final at = DateTime.now().millisecondsSinceEpoch;
+    history.insert(0, HistoryEntry(gameId, at));
+    hooks?.played(gameId, at);
     if (history.length > 20) history = history.sublist(0, 20);
     _prefs?.setStringList('hist', history.map((h) => h.encode()).toList());
     notifyListeners();
@@ -150,8 +221,58 @@ class AppState extends ChangeNotifier {
   }
 
   void removeFile(ImportedFile f) {
+    if (f.copied && f.path != null) {
+      try {
+        File(f.path!).deleteSync();
+      } catch (_) {}
+    }
     files = files.where((x) => !identical(x, f)).toList();
     _saveFiles();
+    notifyListeners();
+  }
+
+  void setGfx(GfxQuality v) {
+    gfx = v;
+    _prefs?.setInt('gfx', v.index);
+    notifyListeners();
+  }
+
+  void setFpsCap(int v) {
+    fpsCap = kFpsCaps.contains(v) ? v : 0;
+    _prefs?.setInt('fpsCap', fpsCap);
+    notifyListeners();
+  }
+
+  void setWebControls(WebControls v) {
+    webControls = v;
+    _prefs?.setInt('webControls', v.index);
+    notifyListeners();
+  }
+
+  void setPadStyle(int v) {
+    padStyle = v.clamp(-1, PadFamily.values.length - 1);
+    _prefs?.setInt('padStyle', padStyle);
+    notifyListeners();
+  }
+
+  /// Estilo visual dos botões: o escolhido ou, se automático, o do jogo.
+  PadFamily padFamilyFor(PadFamily gameDefault) =>
+      padStyle < 0 ? gameDefault : PadFamily.values[padStyle];
+
+  /// Aplica dados vindos da nuvem (união) sem disparar novos envios.
+  void mergeFromCloud({Set<String>? favs, List<HistoryEntry>? hist, String? name}) {
+    if (favs != null) {
+      favorites = {...favorites, ...favs};
+      _prefs?.setStringList('fav', favorites.toList());
+    }
+    if (hist != null) {
+      history = mergeHistory(history, hist);
+      _prefs?.setStringList('hist', history.map((h) => h.encode()).toList());
+    }
+    if (name != null && name.trim().length >= 2 && userName == defaultName) {
+      userName = name.trim();
+      _prefs?.setString('user', userName);
+    }
     notifyListeners();
   }
 
@@ -193,9 +314,10 @@ class AppState extends ChangeNotifier {
 
   void setUserName(String v) {
     final t = v.trim();
-    if (t.isEmpty) return;
+    if (t.length < 2) return;
     userName = t.length > 24 ? t.substring(0, 24) : t;
     _prefs?.setString('user', userName);
+    hooks?.renamed(userName);
     notifyListeners();
   }
 

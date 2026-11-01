@@ -86,6 +86,7 @@ class GatewaySession extends StreamSession {
   int _attempt = 0;
   bool _stopped = false;
   String _status = 'Conectando…';
+  final String _nonce = DateTime.now().microsecondsSinceEpoch.toString();
 
   @override
   String get modeLabel => 'Streaming remoto';
@@ -164,6 +165,7 @@ class GatewaySession extends StreamSession {
       _ch?.sink.add(jsonEncode({
         't': 'ping',
         'ts': DateTime.now().millisecondsSinceEpoch,
+        'nx': _nonce,
       }));
     } catch (_) {}
   }
@@ -174,7 +176,8 @@ class GatewaySession extends StreamSession {
       final m = jsonDecode(data);
       if (m is! Map) return;
       final t = m['t'];
-      if (t == 'pong') {
+      // 'pong' vem de um servidor NEXUS; um servidor de eco devolve o nosso próprio 'ping'.
+      if (t == 'pong' || (t == 'ping' && m['nx'] == _nonce)) {
         final ts = m['ts'];
         if (ts is int) {
           rttMs = DateTime.now().millisecondsSinceEpoch - ts;

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../cloud/cloud.dart';
 import '../data/catalog.dart';
 import '../models/game.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../util/launcher.dart';
+import 'auth.dart';
 import 'game_detail.dart';
 import 'settings.dart';
 
@@ -75,6 +77,8 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 18),
+          const _AccountCard(),
+          const SizedBox(height: 18),
           Material(
             color: NX.surface,
             clipBehavior: Clip.antiAlias,
@@ -143,4 +147,92 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       );
+}
+
+class _AccountCard extends StatelessWidget {
+  const _AccountCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final cloud = CloudScope.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: NX.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: NX.purple.withAlpha(40)),
+      ),
+      child: cloud == null
+          ? const Text('Conta indisponível.', style: TextStyle(color: NX.muted))
+          : ListenableBuilder(
+              listenable: cloud,
+              builder: (context, _) {
+                if (!cloud.ready) {
+                  return const Text(
+                    'Login indisponível agora. O app funciona normalmente sem conta.',
+                    style: TextStyle(color: NX.muted),
+                  );
+                }
+                if (!cloud.signedIn) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Conta NEXUS',
+                        style: TextStyle(color: NX.text, fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Opcional. Guarda favoritos e histórico na nuvem.',
+                        style: TextStyle(color: NX.muted, fontSize: 13),
+                      ),
+                      const SizedBox(height: 10),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(builder: (_) => const AuthScreen()),
+                        ),
+                        child: const Text('Entrar ou criar conta'),
+                      ),
+                    ],
+                  );
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Conta NEXUS',
+                      style: TextStyle(color: NX.text, fontWeight: FontWeight.w800),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(cloud.email ?? '', style: const TextStyle(color: NX.muted)),
+                    const SizedBox(height: 4),
+                    Text(
+                      cloud.syncing
+                          ? 'Sincronizando…'
+                          : cloud.lastError ??
+                              (cloud.lastSync == null
+                                  ? 'Ainda não sincronizado.'
+                                  : 'Sincronizado: favoritos e histórico.'),
+                      style: TextStyle(
+                        color: cloud.lastError != null ? NX.bad : NX.ok,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        OutlinedButton(
+                          onPressed: cloud.syncing ? null : cloud.syncAll,
+                          child: const Text('Sincronizar'),
+                        ),
+                        TextButton(onPressed: cloud.signOut, child: const Text('Sair da conta')),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
 }
