@@ -41,8 +41,8 @@ ThemeData buildTheme() {
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: NX.surface,
       indicatorColor: NX.purple.withAlpha(70),
-      labelTextStyle: WidgetStatePropertyAll(
-        const TextStyle(fontSize: 12, color: NX.text),
+      labelTextStyle: const WidgetStatePropertyAll(
+        TextStyle(fontSize: 12, color: NX.text),
       ),
     ),
     snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating),
