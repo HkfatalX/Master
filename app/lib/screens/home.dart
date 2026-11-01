@@ -6,6 +6,8 @@ import '../state/app_state.dart';
 import '../theme.dart';
 import '../util/launcher.dart';
 import '../widgets/game_card.dart';
+import 'files.dart';
+import 'services.dart';
 import 'settings.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -96,6 +98,28 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _Shortcut(
+                  icon: Icons.folder_open,
+                  title: 'Central de Jogos',
+                  subtitle: 'Importar arquivos',
+                  page: const FilesScreen(),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _Shortcut(
+                  icon: Icons.hub_outlined,
+                  title: 'Plataformas',
+                  subtitle: 'Steam, Xbox e mais',
+                  page: const ServicesScreen(),
+                ),
+              ),
+            ],
+          ),
           if (recent.isNotEmpty) ...[
             _title('Continuar jogando'),
             _row(recent.take(8).toList()),
@@ -159,6 +183,47 @@ class _EmulatorTile extends StatelessWidget {
               );
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _Shortcut extends StatelessWidget {
+  const _Shortcut({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.page,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget page;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: NX.surface,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: NX.purple.withAlpha(60)),
+      ),
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page)),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: NX.neon),
+              const SizedBox(height: 8),
+              Text(title, style: const TextStyle(color: NX.text, fontWeight: FontWeight.w800)),
+              Text(subtitle, style: const TextStyle(color: NX.muted, fontSize: 12)),
+            ],
+          ),
         ),
       ),
     );

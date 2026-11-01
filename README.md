@@ -16,6 +16,7 @@ com controles virtuais por plataforma e suporte a controle Bluetooth.
 | Controle Bluetooth (botões e direcional) | Pronto; analógicos físicos pendentes |
 | Abrir jogos Android e emuladores instalados | Pronto (pacotes ainda não testados em aparelho) |
 | Conexão segura (wss://), latência medida, reconexão | Pronto, testado só em código; falta servidor real |
+| Mecanismo de execução, Central de Jogos (importar arquivos), Plataformas (abrir app/site oficial) | Pronto; sem login de conta |
 | Vídeo por streaming (WebRTC) | **Pendente** |
 | Login e catálogo na nuvem (Supabase) | **Pendente** (esquema em `database/`) |
 | Painel administrativo | **Pendente** |

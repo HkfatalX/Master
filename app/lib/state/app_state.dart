@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/catalog.dart';
+import '../data/formats.dart';
 import '../models/game.dart';
 
 /// Perfis de desempenho. Os números são enviados ao servidor no início da sessão.
@@ -61,6 +64,7 @@ class AppState extends ChangeNotifier {
 
   Set<String> favorites = <String>{};
   List<HistoryEntry> history = <HistoryEntry>[];
+  List<ImportedFile> files = <ImportedFile>[];
   QualityProfile profile = QualityProfile.balanced;
   bool haptics = true;
   bool showHud = true;
@@ -88,6 +92,16 @@ class AppState extends ChangeNotifier {
     history = (p.getStringList('hist') ?? <String>[])
         .map(HistoryEntry.parse)
         .whereType<HistoryEntry>()
+        .toList();
+    files = (p.getStringList('files') ?? <String>[])
+        .map((s) {
+          try {
+            return ImportedFile.fromJson(jsonDecode(s));
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<ImportedFile>()
         .toList();
     final pi = p.getInt('profile') ?? QualityProfile.balanced.index;
     profile = QualityProfile.values[pi.clamp(0, QualityProfile.values.length - 1)];
@@ -118,6 +132,26 @@ class AppState extends ChangeNotifier {
   void clearHistory() {
     history = <HistoryEntry>[];
     _prefs?.setStringList('hist', <String>[]);
+    notifyListeners();
+  }
+
+  void _saveFiles() {
+    _prefs?.setStringList('files', files.map((f) => jsonEncode(f.toJson())).toList());
+  }
+
+  /// Adiciona arquivos e retorna quantos foram adicionados (ignora o mesmo nome+tamanho já na lista
+  /// só quando vier exatamente repetido na mesma seleção; duplicados antigos aparecem marcados).
+  int addFiles(List<ImportedFile> add) {
+    if (add.isEmpty) return 0;
+    files = [...files, ...add];
+    _saveFiles();
+    notifyListeners();
+    return add.length;
+  }
+
+  void removeFile(ImportedFile f) {
+    files = files.where((x) => !identical(x, f)).toList();
+    _saveFiles();
     notifyListeners();
   }
 

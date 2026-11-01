@@ -25,6 +25,11 @@ PACKAGES = [
     "com.github.stenzek.duckstation",
     "org.dolphinemu.dolphinemu",
     "com.retroarch",
+    "com.valvesoftware.android.steam.community",
+    "com.microsoft.xboxone.smartglass",
+    "com.scee.psxandroid",
+    "com.epicgames.portal",
+    "com.roblox.client",
 ]
 
 

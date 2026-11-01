@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../engine/execution.dart';
 import '../models/game.dart';
 import '../player/player_screen.dart';
 import '../state/app_state.dart';
@@ -143,6 +144,8 @@ class GameDetailScreen extends StatelessWidget {
             child: Text(availability, style: TextStyle(color: availColor)),
           ),
           const SizedBox(height: 18),
+          _RunPlan(game: game, hasServer: s.hasServer),
+          const SizedBox(height: 18),
           const Text(
             'Informações técnicas',
             style: TextStyle(color: NX.text, fontSize: 16, fontWeight: FontWeight.w700),
@@ -169,6 +172,89 @@ class GameDetailScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Mostra cada forma de executar o jogo e se ela está realmente disponível agora.
+class _RunPlan extends StatefulWidget {
+  const _RunPlan({required this.game, required this.hasServer});
+
+  final Game game;
+  final bool hasServer;
+
+  @override
+  State<_RunPlan> createState() => _RunPlanState();
+}
+
+class _RunPlanState extends State<_RunPlan> {
+  Set<String> _installed = <String>{};
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _detect();
+  }
+
+  Future<void> _detect() async {
+    final pkg = widget.game.androidPackage;
+    final set = <String>{};
+    if (pkg != null && await isAppInstalled(pkg)) set.add(pkg);
+    if (mounted) {
+      setState(() {
+        _installed = set;
+        _loading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final options = planFor(widget.game, installed: _installed, hasServer: widget.hasServer);
+    final best = bestOption(options);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Como executar',
+          style: TextStyle(color: NX.text, fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 6),
+        if (_loading)
+          const Text('Verificando…', style: TextStyle(color: NX.muted))
+        else ...[
+          for (final o in options)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    o.available ? Icons.check_circle : Icons.cancel_outlined,
+                    size: 18,
+                    color: o.available ? NX.ok : NX.muted,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${o.kind.label}: ${o.reason}',
+                      style: TextStyle(color: o.available ? NX.text : NX.muted, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (best == null)
+            const Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Text(
+                'Nenhuma forma de executar está disponível agora.',
+                style: TextStyle(color: NX.warn, fontSize: 13),
+              ),
+            ),
+        ],
+      ],
     );
   }
 }
