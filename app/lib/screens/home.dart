@@ -136,27 +136,30 @@ class _EmulatorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
         color: NX.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: NX.purple.withAlpha(40)),
-      ),
-      child: ListTile(
-        leading: const Icon(Icons.memory, color: NX.neon),
-        title: Text(emulator.name),
-        subtitle: Text(emulator.systems, style: const TextStyle(color: NX.muted)),
-        trailing: const Icon(Icons.open_in_new, size: 18, color: NX.muted),
-        onTap: () async {
-          final messenger = ScaffoldMessenger.of(context);
-          final ok = await launchInstalledApp(emulator.package);
-          if (!ok) {
-            messenger.showSnackBar(
-              SnackBar(content: Text('${emulator.name} não está instalado neste aparelho.')),
-            );
-          }
-        },
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: NX.purple.withAlpha(40)),
+        ),
+        child: ListTile(
+          leading: const Icon(Icons.memory, color: NX.neon),
+          title: Text(emulator.name),
+          subtitle: Text(emulator.systems, style: const TextStyle(color: NX.muted)),
+          trailing: const Icon(Icons.open_in_new, size: 18, color: NX.muted),
+          onTap: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            final ok = await launchInstalledApp(emulator.package);
+            if (!ok) {
+              messenger.showSnackBar(
+                SnackBar(content: Text('${emulator.name} não está instalado neste aparelho.')),
+              );
+            }
+          },
+        ),
       ),
     );
   }

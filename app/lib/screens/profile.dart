@@ -75,11 +75,10 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 18),
-          Container(
-            decoration: BoxDecoration(
-              color: NX.surface,
-              borderRadius: BorderRadius.circular(16),
-            ),
+          Material(
+            color: NX.surface,
+            clipBehavior: Clip.antiAlias,
+            borderRadius: BorderRadius.circular(16),
             child: ListTile(
               leading: const Icon(Icons.settings, color: NX.neon),
               title: const Text('Configurações'),
