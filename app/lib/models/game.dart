@@ -40,7 +40,7 @@ extension RunMethodX on RunMethod {
         RunMethod.local => 'Local',
         RunMethod.streaming => 'Streaming',
         RunMethod.experimental => 'Experimental',
-        RunMethod.browser => 'No app (web)',
+        RunMethod.browser => 'No app',
         RunMethod.unavailable => 'Indisponível',
       };
 

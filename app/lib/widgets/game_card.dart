@@ -21,6 +21,8 @@ class MethodBadge extends StatelessWidget {
       ),
       child: Text(
         method.label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(color: method.color, fontSize: 11, fontWeight: FontWeight.w700),
       ),
     );
@@ -95,9 +97,10 @@ class GameCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      MethodBadge(game.method),
+                      Flexible(flex: 3, child: MethodBadge(game.method)),
                       const SizedBox(width: 6),
                       Flexible(
+                        flex: 2,
                         child: Text(
                           game.platform.label,
                           overflow: TextOverflow.ellipsis,
