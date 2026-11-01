@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../engine/execution.dart';
 import '../models/game.dart';
 import '../player/player_screen.dart';
+import '../player/web_game_screen.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
 import '../util/launcher.dart';
@@ -17,6 +18,10 @@ class GameDetailScreen extends StatelessWidget {
   Future<void> _play(BuildContext context, AppState s) async {
     final messenger = ScaffoldMessenger.of(context);
     final nav = Navigator.of(context);
+    if (game.webUrl != null) {
+      nav.push(MaterialPageRoute<void>(builder: (_) => WebGameScreen(game: game, state: s)));
+      return;
+    }
     if (game.method == RunMethod.local && game.androidPackage != null) {
       final ok = await launchInstalledApp(game.androidPackage!);
       if (ok) {
@@ -79,9 +84,13 @@ class GameDetailScreen extends StatelessWidget {
     final s = AppScope.of(context);
     final fav = s.favorites.contains(game.id);
     final local = game.method == RunMethod.local;
+    final web = game.webUrl != null;
     final String availability;
     final Color availColor;
-    if (local) {
+    if (web) {
+      availability = 'Abre dentro do app. Precisa de internet.';
+      availColor = NX.ok;
+    } else if (local) {
       availability = 'Abre o app instalado neste aparelho (${game.androidPackage}).';
       availColor = NX.ok;
     } else if (s.hasServer) {
@@ -163,8 +172,8 @@ class GameDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
           child: FilledButton.icon(
             onPressed: () => _play(context, s),
-            icon: Icon(local ? Icons.open_in_new : Icons.play_arrow),
-            label: Text(local ? 'Abrir jogo' : 'Jogar por streaming'),
+            icon: Icon(local && !web ? Icons.open_in_new : Icons.play_arrow),
+            label: Text(web ? 'Jogar no app' : local ? 'Abrir jogo' : 'Jogar por streaming'),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(52),
               backgroundColor: NX.purple,

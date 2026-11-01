@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-enum GamePlatform { pc, ps1, ps2, ps3, ps4, psp, nintendo, xbox, android }
+enum GamePlatform { pc, ps1, ps2, ps3, ps4, psp, nintendo, xbox, android, web }
 
 extension GamePlatformX on GamePlatform {
   String get label => switch (this) {
@@ -15,6 +15,7 @@ extension GamePlatformX on GamePlatform {
         GamePlatform.nintendo => 'Nintendo',
         GamePlatform.xbox => 'Xbox',
         GamePlatform.android => 'Android',
+        GamePlatform.web => 'Web',
       };
 
   IconData get icon => switch (this) {
@@ -27,17 +28,19 @@ extension GamePlatformX on GamePlatform {
         GamePlatform.nintendo => Icons.gamepad,
         GamePlatform.xbox => Icons.gamepad_outlined,
         GamePlatform.android => Icons.android,
+        GamePlatform.web => Icons.public,
       };
 }
 
 /// Como o jogo é executado.
-enum RunMethod { local, streaming, experimental, unavailable }
+enum RunMethod { local, browser, streaming, experimental, unavailable }
 
 extension RunMethodX on RunMethod {
   String get label => switch (this) {
         RunMethod.local => 'Local',
         RunMethod.streaming => 'Streaming',
         RunMethod.experimental => 'Experimental',
+        RunMethod.browser => 'No app (web)',
         RunMethod.unavailable => 'Indisponível',
       };
 
@@ -45,6 +48,7 @@ extension RunMethodX on RunMethod {
         RunMethod.local => NX.ok,
         RunMethod.streaming => NX.blue,
         RunMethod.experimental => NX.warn,
+        RunMethod.browser => NX.neon,
         RunMethod.unavailable => NX.bad,
       };
 }
@@ -73,6 +77,7 @@ class Game {
     required this.requirements,
     required this.hue,
     this.androidPackage,
+    this.webUrl,
     this.pad = PadFamily.generic,
   });
 
@@ -85,6 +90,9 @@ class Game {
   final String requirements;
   final double hue;
   final String? androidPackage;
+
+  /// Endereço https de um jogo web que abre dentro do app.
+  final String? webUrl;
   final PadFamily pad;
 
   Color get color1 => HSLColor.fromAHSL(1, hue, 0.62, 0.32).toColor();

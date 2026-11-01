@@ -23,6 +23,16 @@
 - **Plataformas e contas**: abre o app ou o site oficial de Steam, Xbox, PlayStation, Epic, Roblox, Nintendo,
   GOG, Ubisoft, EA, Battle.net e itch.io. **Não há login nem sincronização de biblioteca.**
 
+## Adicionado na etapa 3 (custo zero)
+- **Jogos dentro do app**: navegador embutido (WebView) abre jogos web gratuitos (Lichess, 2048, Hextris,
+  A Dark Room, OpenFront, Jstris, Cookie Clicker). Sem servidor, sem custo. Só navega no próprio site do jogo;
+  links externos são bloqueados. Precisa de internet. Endereços escolhidos de memória; não abertos em aparelho.
+- **Provedores de nuvem**: informa custo, requisitos e limites de GeForce NOW, Xbox Cloud Gaming e Steam Link e
+  abre o app/site oficial. Não consulta fila, não cria sessão, não simula disponibilidade. Conectar conta: pendente.
+- **Roblox**: abre o app oficial.
+- **APK sem login**: o build publica `NexusCloud.apk` na aba Releases (tag `latest`).
+- O app não depende de nenhum servidor próprio. Streaming próprio continua **não funcional** (sem vídeo).
+
 ## Experimental / não verificado
 - Pacotes Android do catálogo e dos emuladores foram escritos de memória; falta conferir em aparelho.
 - Compilação: depende do GitHub Actions; o resultado do primeiro build ainda não foi conferido.

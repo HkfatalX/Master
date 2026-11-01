@@ -23,6 +23,16 @@ com controles virtuais por plataforma e suporte a controle Bluetooth.
 
 Detalhes e limites reais: [`docs/STATUS.md`](docs/STATUS.md).
 
+## Baixar o APK
+
+Aba **Releases** → `latest` → `NexusCloud.apk` (não precisa de login). O APK é assinado com a chave de debug
+do GitHub, que muda a cada build: para atualizar, desinstale a versão anterior antes.
+
+## Custo
+
+R$ 0. O app roda sem servidor: jogos web dentro do app, jogos Android e emuladores instalados. Provedores de
+nuvem são de terceiros e alguns são pagos (marcado em cada card). Nada é cobrado pelo NEXUS.
+
 ## Compilar
 
 O GitHub Actions compila sozinho a cada alteração em `app/` (aba **Actions** → artefatos

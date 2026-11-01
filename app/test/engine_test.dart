@@ -21,9 +21,18 @@ void main() {
     });
 
     test('nunca marca como disponível sem verificar', () {
-      for (final g in kCatalog) {
+      for (final g in kCatalog.where((g) => g.webUrl == null)) {
         final o = planFor(g, installed: {}, hasServer: false);
         expect(o.where((x) => x.available), isEmpty, reason: g.id);
+      }
+    });
+
+    test('jogo web abre pelo navegador embutido', () {
+      final web = kCatalog.where((g) => g.webUrl != null).toList();
+      expect(web, isNotEmpty);
+      for (final g in web) {
+        expect(g.webUrl!.startsWith('https://'), isTrue, reason: g.id);
+        expect(bestOption(planFor(g, installed: {}, hasServer: false))?.kind, RunKind.browser);
       }
     });
   });

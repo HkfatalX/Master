@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../util/launcher.dart';
 import '../widgets/game_card.dart';
 import 'files.dart';
+import 'providers.dart';
 import 'services.dart';
 import 'settings.dart';
 
@@ -120,6 +121,28 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _Shortcut(
+                  icon: Icons.cloud_outlined,
+                  title: 'Provedores',
+                  subtitle: 'Nuvem de terceiros',
+                  page: const ProvidersScreen(),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _Shortcut(
+                  icon: Icons.public,
+                  title: 'Jogos no app',
+                  subtitle: 'Grátis, sem servidor',
+                  onTap: () => onPlatform(GamePlatform.web),
+                ),
+              ),
+            ],
+          ),
           if (recent.isNotEmpty) ...[
             _title('Continuar jogando'),
             _row(recent.take(8).toList()),
@@ -194,13 +217,15 @@ class _Shortcut extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.page,
+    this.page,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
-  final Widget page;
+  final Widget? page;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +237,8 @@ class _Shortcut extends StatelessWidget {
         side: BorderSide(color: NX.purple.withAlpha(60)),
       ),
       child: InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page)),
+        onTap: onTap ??
+            () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page!)),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(

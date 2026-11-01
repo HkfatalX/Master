@@ -13,6 +13,9 @@ on:
       - "scripts/**"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -52,6 +55,19 @@ jobs:
 
       - name: APK release
         run: flutter build apk --release
+
+      - name: Publicar APK na aba Releases (download sem login)
+        if: github.event_name != 'pull_request'
+        working-directory: ${{ github.workspace }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/app/outputs/flutter-apk/app-release.apk NexusCloud.apk
+          gh release view latest -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create latest -R "$GITHUB_REPOSITORY" --prerelease \
+              --title "NEXUS CLOUD (último build)" \
+              --notes "APK mais recente. Baixe NexusCloud.apk e instale no Android."
+          gh release upload latest NexusCloud.apk -R "$GITHUB_REPOSITORY" --clobber
 
       - name: Publicar APK debug
         uses: actions/upload-artifact@v4

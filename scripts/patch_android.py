@@ -30,6 +30,7 @@ PACKAGES = [
     "com.scee.psxandroid",
     "com.epicgames.portal",
     "com.roblox.client",
+    "com.nvidia.geforcenow",
 ]
 
 

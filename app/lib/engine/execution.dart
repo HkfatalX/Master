@@ -9,7 +9,7 @@ extension RunKindX on RunKind {
         RunKind.emulator => 'Emulador local',
         RunKind.pcStream => 'Streaming de PC remoto',
         RunKind.officialApp => 'Aplicativo oficial da plataforma',
-        RunKind.browser => 'Navegador',
+        RunKind.browser => 'Navegador embutido no app',
       };
 }
 
@@ -40,6 +40,13 @@ List<RunOption> planFor(
       RunKind.androidApp,
       ok,
       ok ? 'Instalado neste aparelho.' : 'Não instalado neste aparelho.',
+    ));
+  }
+  if (game.webUrl != null) {
+    out.add(const RunOption(
+      RunKind.browser,
+      true,
+      'Abre dentro do app. Precisa de internet (a conexão não é testada antes).',
     ));
   }
   if (game.method == RunMethod.streaming) {
