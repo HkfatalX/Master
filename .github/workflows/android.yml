@@ -41,6 +41,9 @@ jobs:
       - name: Ajustar o manifesto
         run: python3 ../scripts/patch_android.py android/app/src/main/AndroidManifest.xml
 
+      - name: Ícone do app
+        run: python3 -m pip install --quiet pillow && python3 ../scripts/make_icons.py ../assets/icon.png android/app/src/main/res
+
       - name: Dependências
         run: flutter pub get
 
